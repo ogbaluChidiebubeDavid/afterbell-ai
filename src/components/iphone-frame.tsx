@@ -259,10 +259,17 @@ export const IPhoneFrame: React.FC<IPhoneFrameProps> = ({
     : currentScenario.messages;
 
   return (
-    <div className="relative mx-auto w-[310px] sm:w-[350px] lg:w-[360px] rounded-[52px] bg-gradient-to-b from-[#dedee2] via-[#8e8e93] to-[#444448] p-[9px] shadow-[0_32px_80px_rgba(0,0,0,0.5)]">
-      
-      {/* Inner Screen Chassis */}
-      <div className="relative h-[650px] overflow-hidden rounded-[43px] bg-[#1c1c1e] ring-1 ring-black/80 flex flex-col">
+    <div 
+      className="mx-auto h-[440px] sm:h-[490px] lg:h-[520px] xl:h-[550px] w-[300px] sm:w-[340px] overflow-hidden" 
+      style={{ 
+        maskImage: 'linear-gradient(to bottom, black 0%, black 78%, transparent 100%)', 
+        WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 78%, transparent 100%)' 
+      }}
+    >
+      <div className="relative mx-auto w-[300px] sm:w-[340px] rounded-[52px] bg-gradient-to-b from-[#dedee2] via-[#8e8e93] to-[#444448] p-[9px] shadow-[0_32px_80px_rgba(0,0,0,0.5)]">
+        
+        {/* Inner Screen Chassis */}
+        <div className="relative h-[650px] overflow-hidden rounded-[43px] bg-[#1c1c1e] ring-1 ring-black/80 flex flex-col">
         
         {/* Dynamic Island */}
         <div className="absolute top-0 left-1/2 z-30 h-[34px] w-[132px] -translate-x-1/2 rounded-b-[20px] bg-black" aria-hidden="true">
@@ -415,5 +422,6 @@ export const IPhoneFrame: React.FC<IPhoneFrameProps> = ({
 
       </div>
     </div>
+  </div>
   );
 };

@@ -65,13 +65,13 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#101010] text-[#eeeeeb] flex flex-col justify-between selection:bg-[#eeeeeb] selection:text-[#111]">
+    <div className="h-screen max-h-screen bg-[#101010] text-[#eeeeeb] flex flex-col justify-between overflow-y-auto lg:overflow-hidden selection:bg-[#eeeeeb] selection:text-[#111]">
       
       {/* Shell Container */}
-      <div className="w-full max-w-[1240px] mx-auto px-5 sm:px-8 lg:px-12 py-6 sm:py-8 flex flex-col min-h-screen justify-between gap-10">
+      <div className="w-full max-w-[1240px] mx-auto px-5 sm:px-8 lg:px-12 py-4 sm:py-5 lg:py-6 flex flex-col h-full max-h-screen justify-between gap-4 lg:gap-6">
         
         {/* Masthead */}
-        <header className="flex items-center justify-between gap-4 text-[11px] uppercase tracking-[0.12em] text-[#999] border-b border-[#222] pb-5">
+        <header className="flex items-center justify-between gap-4 text-[11px] uppercase tracking-[0.12em] text-[#999] border-b border-[#222] pb-3 sm:pb-4 shrink-0">
           <div className="flex items-center gap-3">
             <span className="font-bold text-base tracking-[-0.03em] text-[#eeeeeb] uppercase">
               Afterbell
@@ -99,28 +99,28 @@ export default function LandingPage() {
         </header>
 
         {/* Main Content Grid (Adaam 1:1 Clean Layout) */}
-        <main className="my-auto py-6 sm:py-10">
-          <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(300px,0.85fr)] lg:gap-10">
+        <main className="my-auto py-2 flex items-center justify-center flex-1 min-h-0">
+          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(300px,0.85fr)] lg:gap-10 w-full">
             
             {/* Left Column: Clean Pure Typography */}
-            <section className="max-w-[760px] space-y-6">
+            <section className="max-w-[760px] space-y-4 sm:space-y-5">
               
               <div className="space-y-1">
-                <h1 className="text-[clamp(48px,7.5vw,94px)] font-semibold leading-[0.98] tracking-[-0.07em] text-[#eeeeeb]">
+                <h1 className="text-[clamp(42px,5.8vw,80px)] font-semibold leading-[0.98] tracking-[-0.07em] text-[#eeeeeb]">
                   <span>Run trading</span>
                   <span className="block -mt-[0.14em]">agents from</span>
                   <span>iMessage</span>
                 </h1>
               </div>
 
-              <p className="text-[clamp(16px,2.2vw,20px)] text-[#999] leading-[1.45] max-w-[540px]">
+              <p className="text-[clamp(14px,1.4vw,18px)] text-[#999] leading-[1.4] max-w-[500px]">
                 Choose a strategy like tracking congressional trades, following specific X accounts, watching new IPO filings, or after-hours rToken pricing. You set the conditions, your agent runs around the clock and texts you the moment it spots a signal.
               </p>
 
               {/* Copy Prompt Block (Adaam 1:1 Design) */}
-              <section className="w-full max-w-[580px] pt-4" aria-labelledby="prompt-label">
-                <div className="border border-[#3b3b3b] bg-[#181818] rounded-[26px] grid grid-cols-[minmax(0,1fr)_46px] items-center gap-2 p-[9px] shadow-[0_16px_38px_rgba(0,0,0,0.18)]">
-                  <p className="font-mono text-[clamp(13px,1.15vw,15px)] text-[#eeeeeb] px-4 truncate tracking-[-0.03em] m-0">
+              <section className="w-full max-w-[540px] pt-1" aria-labelledby="prompt-label">
+                <div className="border border-[#3b3b3b] bg-[#181818] rounded-[24px] grid grid-cols-[minmax(0,1fr)_44px] items-center gap-2 p-[7px] shadow-[0_16px_38px_rgba(0,0,0,0.18)]">
+                  <p className="font-mono text-[clamp(12px,1.1vw,14px)] text-[#eeeeeb] px-3.5 truncate tracking-[-0.03em] m-0">
                     Read https://afterbell.vercel.app/skill &amp; help me launch my own agent.
                   </p>
                   <button
@@ -128,7 +128,7 @@ export default function LandingPage() {
                     aria-label="Copy prompt"
                     title="Copy prompt"
                     type="button"
-                    className="w-[46px] h-[46px] rounded-full bg-[#eeeeeb] hover:bg-[#cfcfcb] active:scale-95 text-[#111] flex items-center justify-center transition-all cursor-pointer border-0"
+                    className="w-[44px] h-[44px] rounded-full bg-[#eeeeeb] hover:bg-[#cfcfcb] active:scale-95 text-[#111] flex items-center justify-center transition-all cursor-pointer border-0"
                   >
                     {hasCopiedPrompt ? (
                       <Check className="w-4 h-4 text-[#10b981]" />
@@ -137,7 +137,7 @@ export default function LandingPage() {
                     )}
                   </button>
                 </div>
-                <p id="prompt-label" className="text-[#999] text-xs mt-2.5 ml-3 tracking-[-0.01em]">
+                <p id="prompt-label" className="text-[#999] text-[11px] mt-2 ml-3 tracking-[-0.01em]">
                   Paste into your coding agent
                 </p>
               </section>
@@ -145,7 +145,7 @@ export default function LandingPage() {
             </section>
 
             {/* Right Column: 3D iPhone Frame Auto-Cycling Through All Strategy Modules */}
-            <div className="w-full flex items-center justify-center lg:justify-end">
+            <div className="w-full flex items-center justify-center lg:justify-end min-h-0">
               <IPhoneFrame
                 onSendMessage={handleSendMessage}
                 isSending={isSending}
@@ -156,7 +156,7 @@ export default function LandingPage() {
         </main>
 
         {/* Footer (Adaam 1:1 Design) */}
-        <footer className="border-t border-[#222] pt-6 pb-2 text-[11px] text-[#777] leading-[1.5]">
+        <footer className="border-t border-[#222] pt-3 pb-1 text-[10px] text-[#666] leading-[1.4] shrink-0">
           <span>
             For informational purposes only; not investment advice or a recommendation. Trading involves substantial risk, including the potential loss of your entire investment. AI agents may make mistakes or fail. You direct all agent activity and assume all risk for transactions your agents execute, as well as for any use of your data by third-party AI providers. Built for Bitget AI Base Camp Hackathon S2 (Track: Agentic Trading, Sub-Theme: Event-Driven Agent / After-Hours Information Pricing).
           </span>

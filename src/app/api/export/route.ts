@@ -1,0 +1,46 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { AuditLoggerService } from '@/services/audit-logger';
+import { PortfolioManagerService } from '@/services/portfolio-manager';
+
+export async function GET(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const format = searchParams.get('format') || 'csv';
+
+    if (format === 'json') {
+      const proposals = AuditLoggerService.getAllProposals();
+      const portfolio = PortfolioManagerService.getPortfolioState();
+
+      const exportPayload = {
+        project: "Afterbell - Agentic Trading Assistant",
+        hackathon: "Bitget AI Base Camp Hackathon S2",
+        track: "Agentic Trading (Event-Driven / After-Hours Pricing)",
+        generatedAt: new Date().toISOString(),
+        executionMode: "paper-trading",
+        accountIsolation: "Bitget Agentic Account",
+        quantitativeMetrics: portfolio.metrics,
+        openPositions: portfolio.positions,
+        closedTrades: portfolio.closedTrades,
+        explainabilityProposals: proposals,
+      };
+
+      return new NextResponse(JSON.stringify(exportPayload, null, 2), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Disposition': 'attachment; filename="afterbell_paper_trading_audit_log.json"',
+        },
+      });
+    }
+
+    // Default CSV
+    const csvContent = AuditLoggerService.generateCsvAuditLog();
+    return new NextResponse(csvContent, {
+      headers: {
+        'Content-Type': 'text/csv',
+        'Content-Disposition': 'attachment; filename="afterbell_paper_trading_audit_log.csv"',
+      },
+    });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}

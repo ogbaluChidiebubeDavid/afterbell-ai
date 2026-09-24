@@ -3,61 +3,47 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #070a12;
-  --bg-surface: #0e1526;
-  --bg-surface-hover: #141e34;
-  --border-subtle: #1c273e;
-  --border-active: #00f0ff;
-  --text-main: #f1f5f9;
-  --text-dim: #94a3b8;
-  --accent-cyan: #00f0ff;
-  --accent-emerald: #10b981;
-  --accent-rose: #f43f5e;
-  --accent-amber: #f59e0b;
+  --background: #101010;
+  --foreground: #eeeeeb;
+  --muted: #999999;
+  --line: #3b3b3b;
+  --surface: #181818;
+  --button: #eeeeeb;
+  --button-text: #111111;
+  color-scheme: dark;
 }
 
 body {
-  background-color: var(--bg-primary);
-  color: var(--text-main);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+  padding: 0;
   overflow-x: hidden;
 }
 
-/* Glassmorphism surfaces */
-.glass-panel {
-  background: rgba(14, 21, 38, 0.75);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Custom scrollbars hidden */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-.glass-panel-hover:hover {
-  background: rgba(20, 30, 52, 0.85);
-  border-color: rgba(0, 240, 255, 0.25);
+@keyframes chat-message-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #070a12;
-}
-::-webkit-scrollbar-thumb {
-  background: #1c273e;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #00f0ff;
-}
-
-/* Subtle glow badges */
-.badge-glow-cyan {
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
-}
-.badge-glow-emerald {
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
-}
-.badge-glow-amber {
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
+.chat-message-enter {
+  animation: chat-message-enter 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }

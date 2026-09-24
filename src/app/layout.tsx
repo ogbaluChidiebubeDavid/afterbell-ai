@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { DisclaimerBanner } from '@/components/disclaimer-banner';
 
 export const metadata: Metadata = {
-  title: 'Afterbell AI — Agentic Trading Assistant for Bitget Hackathon S2',
-  description: 'Event-driven AI trading assistant watching after-hours information pricing on Bitget rTokens (tokenized US stocks) via Photon iMessage.',
+  title: 'Afterbell — Run trading agents from iMessage',
+  description: 'Deploy your own after-hours trading agent for Bitget tokenized US stocks (rToken) with a couple of clicks.',
 };
 
 export default function RootLayout({
@@ -14,11 +13,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
-        <DisclaimerBanner />
-        <main className="flex-1 flex flex-col">
-          {children}
-        </main>
+      <body className="bg-[#101010] text-[#eeeeeb] min-h-screen font-sans selection:bg-[#eeeeeb] selection:text-[#111]">
+        {children}
       </body>
     </html>
   );

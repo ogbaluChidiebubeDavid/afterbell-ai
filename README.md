@@ -36,13 +36,12 @@ When US cash equity markets reopen Monday morning, they gap violently—inflicti
                                     │
                                     ▼
    ┌─────────────────────────────────────────────────────────────────┐
-   │ 1. PERCEPTION LAYER (Bitget Signal Research Skills)              │
-   │    • news-briefing: Breaking catalysts, leaks, policy changes   │
-   │    • macro-analyst: Fed speeches, yields, cross-asset momentum   │
-   │    • sentiment-analyst: Fear & greed, retail positioning         │
-   │    • market-intel: Institutional flows, on-chain reserves        │
-   │    • technical-analysis: rToken 24/7 orderbook spread & volume   │
-   │    • Watchlist: rNVDA, rTSLA, rAAPL, rMSFT, rCOIN, rMSTR         │
+   │ 1. PERCEPTION LAYER: User-Configured Strategy Conditions        │
+   │    • 🏛️ Congressional Trades: STOCK Act disclosures (Pelosi, etc)│
+   │    • 𝕏 Specific X Accounts: Executive tweets (@elonmusk, etc)    │
+   │    • 📑 New IPO Filings: Weekend SEC EDGAR S-1 / 8-K filings     │
+   │    • ⚡ After-Hours rTokens: Bitget 24/7 tokenized US stocks      │
+   │    • Confirmed via Bitget skills (macro-analyst, news-briefing) │
    └────────────────────────────────┬────────────────────────────────┘
                                     │
                                     ▼

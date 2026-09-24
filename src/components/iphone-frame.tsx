@@ -1,46 +1,265 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Signal, Wifi, BatteryMedium, Send, Check, ShieldCheck, Sparkles, RefreshCw } from 'lucide-react';
-import { IMessageChatEntry } from '@/services/photon-client';
-import { StrategyModule } from '@/services/strategy-modules';
+import { Signal, Wifi, BatteryMedium, Send, Check, Play, Pause, ChevronRight } from 'lucide-react';
+
+export interface StrategyScenario {
+  id: string;
+  name: string;
+  categoryTag: string;
+  messages: {
+    sender: 'AFTERBELL_AGENT' | 'USER';
+    time: string;
+    text: string;
+  }[];
+}
+
+const AUTOMATED_SCENARIOS: StrategyScenario[] = [
+  {
+    id: 'congressional',
+    name: 'Congressional Trades',
+    categoryTag: 'STOCK Act Tracker',
+    messages: [
+      {
+        sender: 'AFTERBELL_AGENT',
+        time: '18:14',
+        text: '🔔 Afterbell: Congressional Watch active for Nancy Pelosi, Dan Crenshaw, Tommy Tuberville.',
+      },
+      {
+        sender: 'AFTERBELL_AGENT',
+        time: '18:32',
+        text: `🚨 MATCH DETECTED [Rep. Nancy Pelosi Disclosure]
+Periodic Transaction Report filed over the weekend:
+Purchased 50x NVDA $120 Call Options (exp 2027), valued $1.25M.
+
+US Equities Closed: ~42 hours until Monday 9:30 AM open.
+Bitget rToken (rNVDA) liquid now @ $128.45.
+
+Decision: LONG rNVDA @ $128.45 ($440 USDT)
+Confidence: 92% | DryRun: PASSED
+
+Reply "YES" to execute paper order, or "NO" to cancel.`,
+      },
+      {
+        sender: 'USER',
+        time: '18:33',
+        text: 'YES',
+      },
+      {
+        sender: 'AFTERBELL_AGENT',
+        time: '18:33',
+        text: `✅ ORDER FILLED [Bitget Agent Hub Paper Trading]
+Bought 3.42 rNVDA @ $128.45 USDT ($439.30)
+Order ID: bg_paper_plsi_928f
+Account: Bitget Agentic (Isolated)`,
+      },
+    ],
+  },
+  {
+    id: 'x_accounts',
+    name: 'Specific X Accounts',
+    categoryTag: '@elonmusk Tracker',
+    messages: [
+      {
+        sender: 'AFTERBELL_AGENT',
+        time: '09:12',
+        text: '🔔 Afterbell: Real-time X watch active for @elonmusk, @unusual_whales, @tier10k.',
+      },
+      {
+        sender: 'AFTERBELL_AGENT',
+        time: '09:28',
+        text: `🚨 MATCH DETECTED [@elonmusk Tweet]
+"FSD v13 full driverless road testing permits officially granted for Shanghai Free Trade Zone fleet starting next month."
+
+Sunday night news gap: NASDAQ closed until Monday 9:30 AM EST.
+Bitget rToken (rTSLA) trading @ $242.80 with rising buy volume.
+
+Decision: LONG rTSLA @ $242.80 ($400 USDT)
+Confidence: 86% | DryRun: PASSED
+
+Reply "YES" to execute paper order, or "NO" to cancel.`,
+      },
+      {
+        sender: 'USER',
+        time: '09:29',
+        text: 'YES',
+      },
+      {
+        sender: 'AFTERBELL_AGENT',
+        time: '09:29',
+        text: `✅ ORDER FILLED [Bitget Agent Hub Paper Trading]
+Bought 1.65 rTSLA @ $242.80 USDT ($400.62)
+Order ID: bg_paper_tsla_412e
+Account: Bitget Agentic (Isolated)`,
+      },
+    ],
+  },
+  {
+    id: 'ipo_filings',
+    name: 'New IPO Filings',
+    categoryTag: 'SEC EDGAR S-1',
+    messages: [
+      {
+        sender: 'AFTERBELL_AGENT',
+        time: '14:05',
+        text: '🔔 Afterbell: SEC EDGAR feed active for AI compute & cloud infrastructure filings.',
+      },
+      {
+        sender: 'AFTERBELL_AGENT',
+        time: '14:22',
+        text: `🚨 MATCH DETECTED [Weekend S-1 Filing]
+Major hyperscaler S-1 amendment details $4.2B multi-year custom accelerator procurement commitments with Tier-1 silicon partners.
+
+US regular equities locked. Bitget 24/7 rTokens liquid.
+
+Decision: LONG rNVDA @ $128.45 ($450 USDT)
+Confidence: 88% | DryRun: PASSED
+
+Reply "YES" to execute paper order, or "NO" to cancel.`,
+      },
+      {
+        sender: 'USER',
+        time: '14:23',
+        text: 'YES',
+      },
+      {
+        sender: 'AFTERBELL_AGENT',
+        time: '14:23',
+        text: `✅ ORDER FILLED [Bitget Agent Hub Paper Trading]
+Bought 3.50 rNVDA @ $128.45 USDT ($449.57)
+Order ID: bg_paper_s1_78a1
+Account: Bitget Agentic (Isolated)`,
+      },
+    ],
+  },
+  {
+    id: 'after_hours_rtoken',
+    name: 'After-Hours rTokens',
+    categoryTag: 'Weekend Temporal Gap',
+    messages: [
+      {
+        sender: 'AFTERBELL_AGENT',
+        time: '21:10',
+        text: '🔔 Afterbell: 24/7 rToken after-hours pricing engine active across weekend gap.',
+      },
+      {
+        sender: 'AFTERBELL_AGENT',
+        time: '21:40',
+        text: `🚨 SUNDAY MOMENTUM DETECTED [BTC Crosses $68.5k]
+Bitcoin surged +4.8% on weekend spot ETF inflows. Historical beta of MicroStrategy (MSTR) implies +5.4% opening gap on Monday.
+
+NASDAQ equity closed until Monday 9:30 AM.
+Bitget rMSTR trading 24/7 @ $134.20.
+
+Decision: LONG rMSTR @ $134.20 ($350 USDT)
+Confidence: 91% | DryRun: PASSED
+
+Reply "YES" to execute paper order, or "NO" to cancel.`,
+      },
+      {
+        sender: 'USER',
+        time: '21:41',
+        text: 'YES',
+      },
+      {
+        sender: 'AFTERBELL_AGENT',
+        time: '21:41',
+        text: `✅ ORDER FILLED [Bitget Agent Hub Paper Trading]
+Bought 2.61 rMSTR @ $134.20 USDT ($350.26)
+Order ID: bg_paper_mstr_891d
+Account: Bitget Agentic (Isolated)`,
+      },
+    ],
+  },
+];
 
 interface IPhoneFrameProps {
-  chatHistory: IMessageChatEntry[];
   onSendMessage: (text: string) => Promise<void>;
   isSending: boolean;
-  selectedStrategy: StrategyModule;
-  onSelectStrategy: (mod: StrategyModule) => void;
 }
 
 export const IPhoneFrame: React.FC<IPhoneFrameProps> = ({
-  chatHistory,
   onSendMessage,
   isSending,
-  selectedStrategy,
 }) => {
+  const [scenarioIndex, setScenarioIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [inputText, setInputText] = useState('');
+  const [customMessages, setCustomMessages] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-cycle through scenarios every 6.5 seconds
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+    const interval = setInterval(() => {
+      setScenarioIndex((prev) => (prev + 1) % AUTOMATED_SCENARIOS.length);
+      setCustomMessages([]); // reset custom overrides on automated switch
+    }, 6500);
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [chatHistory]);
+  }, [scenarioIndex, customMessages]);
+
+  const currentScenario = AUTOMATED_SCENARIOS[scenarioIndex];
 
   const handleSend = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!inputText.trim() || isSending) return;
-    const msg = inputText.trim();
+    const text = inputText.trim();
     setInputText('');
-    await onSendMessage(msg);
+    setIsAutoPlaying(false); // Pause auto-play so user can converse
+
+    setCustomMessages((prev) => [
+      ...prev,
+      { sender: 'USER', time: 'Just now', text },
+    ]);
+
+    await onSendMessage(text);
+
+    // Simulated instant reply in demo if custom
+    setTimeout(() => {
+      if (text.toUpperCase() === 'YES') {
+        setCustomMessages((prev) => [
+          ...prev,
+          {
+            sender: 'AFTERBELL_AGENT',
+            time: 'Just now',
+            text: `✅ ORDER FILLED [Bitget Agent Hub Paper Trading]\nExecuted paper fill on Bitget UTA\nAccount: Bitget Agentic Isolated`,
+          },
+        ]);
+      } else if (text.toUpperCase() === 'NO') {
+        setCustomMessages((prev) => [
+          ...prev,
+          {
+            sender: 'AFTERBELL_AGENT',
+            time: 'Just now',
+            text: `❌ Proposal cancelled. No order was dispatched.`,
+          },
+        ]);
+      }
+    }, 600);
   };
 
   const handleQuickAction = async (cmd: string) => {
-    if (isSending) return;
+    setInputText(cmd);
+    setIsAutoPlaying(false);
     await onSendMessage(cmd);
   };
 
+  const handleNextScenario = () => {
+    setScenarioIndex((prev) => (prev + 1) % AUTOMATED_SCENARIOS.length);
+    setCustomMessages([]);
+  };
+
+  const activeMessages = customMessages.length > 0
+    ? [...currentScenario.messages, ...customMessages]
+    : currentScenario.messages;
+
   return (
-    <div className="relative mx-auto w-[310px] sm:w-[350px] lg:w-[360px] rounded-[52px] bg-gradient-to-b from-[#dedee2] via-[#8e8e93] to-[#444448] p-[9px] shadow-[0_32px_80px_rgba(0,0,0,0.45)]">
+    <div className="relative mx-auto w-[310px] sm:w-[350px] lg:w-[360px] rounded-[52px] bg-gradient-to-b from-[#dedee2] via-[#8e8e93] to-[#444448] p-[9px] shadow-[0_32px_80px_rgba(0,0,0,0.5)]">
       
       {/* Inner Screen Chassis */}
       <div className="relative h-[650px] overflow-hidden rounded-[43px] bg-[#1c1c1e] ring-1 ring-black/80 flex flex-col">
@@ -61,16 +280,54 @@ export const IPhoneFrame: React.FC<IPhoneFrameProps> = ({
           </span>
         </div>
 
+        {/* Strategy Condition Auto-Ticker Ribbon */}
+        <div className="px-4 py-1.5 bg-[#252528] border-b border-white/5 flex items-center justify-between shrink-0 z-10">
+          <div className="flex items-center gap-1.5 overflow-hidden">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#30d158] animate-ping shrink-0" />
+            <span className="text-[10px] font-semibold text-[#eeeeeb] truncate tracking-tight">
+              Watching: <span className="text-white underline decoration-white/30">{currentScenario.name}</span>
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5 shrink-0">
+            {/* Dots indicator */}
+            <div className="flex items-center gap-1">
+              {AUTOMATED_SCENARIOS.map((s, idx) => (
+                <button
+                  key={s.id}
+                  onClick={() => {
+                    setScenarioIndex(idx);
+                    setCustomMessages([]);
+                    setIsAutoPlaying(false);
+                  }}
+                  className={`w-1.5 h-1.5 rounded-full transition-all cursor-pointer ${
+                    idx === scenarioIndex ? 'bg-white w-3' : 'bg-white/30'
+                  }`}
+                  aria-label={`Jump to ${s.name}`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={() => setIsAutoPlaying((prev) => !prev)}
+              className="text-white/60 hover:text-white p-1"
+              title={isAutoPlaying ? 'Pause rotation' : 'Resume auto-rotation'}
+            >
+              {isAutoPlaying ? <Pause className="w-2.5 h-2.5" /> : <Play className="w-2.5 h-2.5" />}
+            </button>
+          </div>
+        </div>
+
         {/* iMessage Contact Header */}
         <div className="px-4 py-2 bg-[#202022]/90 border-b border-white/5 flex items-center justify-between shrink-0 z-10 backdrop-blur-sm">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-cyan-400 to-blue-500 flex items-center justify-center text-slate-950 font-bold text-[11px] shadow-sm">
+            <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-[#0a84ff] to-[#30d158] flex items-center justify-center text-slate-950 font-bold text-[11px] shadow-sm">
               AB
             </div>
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="text-[12px] font-semibold text-white tracking-tight">Afterbell</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#30d158]"></span>
               </div>
               <p className="text-[10px] text-white/50 leading-none">
                 Bitget Agent Hub • Paper Mode
@@ -82,13 +339,16 @@ export const IPhoneFrame: React.FC<IPhoneFrameProps> = ({
           </span>
         </div>
 
-        {/* Chat Messages Feed */}
-        <div className="flex-1 overflow-y-auto px-3.5 pt-3 pb-2 space-y-3 no-scrollbar text-xs">
-          {chatHistory.map((msg) => {
+        {/* Chat Messages Feed with Smooth Opacity Transition */}
+        <div 
+          key={currentScenario.id + customMessages.length}
+          className="flex-1 overflow-y-auto px-3.5 pt-3 pb-2 space-y-3 no-scrollbar text-xs transition-opacity duration-500 ease-in-out"
+        >
+          {activeMessages.map((msg, index) => {
             const isAgent = msg.sender === 'AFTERBELL_AGENT';
             return (
               <div
-                key={msg.id}
+                key={index}
                 className={`flex flex-col ${isAgent ? 'items-start' : 'items-end'} chat-message-enter`}
               >
                 <div
@@ -101,7 +361,7 @@ export const IPhoneFrame: React.FC<IPhoneFrameProps> = ({
                   {msg.text}
                 </div>
                 <span className="text-[9px] text-white/40 mt-1 px-1 font-mono">
-                  {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  {msg.time}
                 </span>
               </div>
             );
@@ -126,18 +386,11 @@ export const IPhoneFrame: React.FC<IPhoneFrameProps> = ({
             Reply "NO"
           </button>
           <button
-            onClick={() => handleQuickAction('STATUS')}
-            disabled={isSending}
-            className="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/15 text-white/80 font-mono transition-all disabled:opacity-50 text-[11px]"
+            onClick={handleNextScenario}
+            className="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/15 text-white/80 font-mono transition-all text-[11px] flex items-center gap-1"
           >
-            STATUS
-          </button>
-          <button
-            onClick={() => handleQuickAction('MENU')}
-            disabled={isSending}
-            className="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/15 text-white/80 font-mono transition-all disabled:opacity-50 text-[11px]"
-          >
-            MENU
+            <span>Next Scenario</span>
+            <ChevronRight className="w-3 h-3" />
           </button>
         </div>
 

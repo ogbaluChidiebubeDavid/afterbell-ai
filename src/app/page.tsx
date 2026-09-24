@@ -83,35 +83,11 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-4 sm:gap-6">
-            <button
-              onClick={() => openModal('portfolio')}
-              className="hover:text-[#eeeeeb] transition-colors flex items-center gap-1.5 cursor-pointer font-medium"
-            >
-              <span>Paper P&L</span>
-              <span className="text-[#10b981] font-mono lowercase text-[10px] bg-[#10b981]/10 px-1.5 py-0.5 rounded">
-                sharpe 2.38
-              </span>
-            </button>
-
-            <button
-              onClick={() => openModal('audit')}
-              className="hover:text-[#eeeeeb] transition-colors cursor-pointer font-medium hidden sm:inline"
-            >
-              Explainability Log
-            </button>
-
-            <button
-              onClick={() => openModal('submission')}
-              className="hover:text-[#eeeeeb] transition-colors cursor-pointer font-medium text-[#0a84ff]"
-            >
-              Submission Pack
-            </button>
-
             <a
               href="https://github.com/BitgetLimited/agent_hub"
               target="_blank"
               rel="noreferrer"
-              className="hover:text-[#eeeeeb] transition-colors inline-flex items-center gap-1.5"
+              className="hover:text-[#eeeeeb] transition-colors inline-flex items-center gap-1.5 text-[#999] hover:text-[#eeeeeb]"
             >
               <svg className="w-3.5 h-3.5 fill-none stroke-current stroke-[1.8]" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.28-.36 6.72-1.61 6.72-7.25A5.65 5.65 0 0 0 19.22 3.3 5.4 5.4 0 0 0 19.08 1S17.9.65 15 2.48a13.38 13.38 0 0 0-7 0C5.1.65 3.92 1 3.92 1a5.4 5.4 0 0 0-.14 2.3A5.65 5.65 0 0 0 2.28 7.25c0 5.63 3.44 6.88 6.72 7.25A4.8 4.8 0 0 0 8 18v4"></path>
@@ -130,9 +106,6 @@ export default function LandingPage() {
             <section className="max-w-[760px] space-y-6">
               
               <div className="space-y-1">
-                <p className="text-[#999] uppercase tracking-[0.12em] text-[11px] font-bold">
-                  Bitget AI Base Camp S2 • Track: Agentic Trading
-                </p>
                 <h1 className="text-[clamp(48px,7.5vw,94px)] font-semibold leading-[0.98] tracking-[-0.07em] text-[#eeeeeb]">
                   <span>Run trading</span>
                   <span className="block -mt-[0.14em]">agents from</span>
@@ -165,21 +138,9 @@ export default function LandingPage() {
                   </button>
                 </div>
                 <p id="prompt-label" className="text-[#999] text-xs mt-2.5 ml-3 tracking-[-0.01em]">
-                  Paste into your coding agent (Claude Code, Cursor, Codex)
+                  Paste into your coding agent
                 </p>
               </section>
-
-              {/* Trust & Safety Badges */}
-              <div className="flex items-center gap-4 text-xs text-[#888] pt-2">
-                <span className="flex items-center gap-1.5 text-[#10b981] font-mono">
-                  <span className="w-2 h-2 rounded-full bg-[#10b981] animate-ping" />
-                  Bitget Agent Hub MCP: Connected (--paper-trading)
-                </span>
-                <span className="text-[#555]">•</span>
-                <span>Max $500 size limit</span>
-                <span className="text-[#555]">•</span>
-                <span>100% Human approval gated</span>
-              </div>
 
             </section>
 

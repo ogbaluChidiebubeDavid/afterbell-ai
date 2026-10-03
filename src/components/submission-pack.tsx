@@ -41,7 +41,7 @@ Afterbell continuously monitors this temporal gap using Bitget's native signal r
       key: 'progress',
       title: 'Part 4: Build Progress & Architecture Milestones',
       content: `• Step 1: Bitget Agentic Account OAuth connection and MCP server integration verified in --paper-trading mode.
-• Step 2: Signal Perception Layer wired with user-configured conditions (Congressional trades, X accounts via Monid, IPO filings) and Bitget research skills.
+• Step 2: Signal Perception Layer wired with user-configured conditions (Congressional trades, X accounts, IPO filings) and Bitget research skills.
 • Step 3: Decision & Explainability Engine implemented with structured trade proposal schema, confidence scoring, and multi-factor rationale.
 • Step 4: Risk Control Layer enforced: $500 position size cap, 3 trades/day frequency cap, 75% min confidence cutoff, dryRun validation, and rejection logger.
 • Step 5: Interface Layer built: Facebook Messenger channel connector with Meta Graph API webhook parser and interactive mobile chat simulator.

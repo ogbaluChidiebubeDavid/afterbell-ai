@@ -52,18 +52,18 @@ export const AUTOMATED_SCENARIOS: StrategyScenario[] = [
   },
   {
     id: 'x_accounts',
-    name: 'X Account Tracker (Monid)',
+    name: 'X Account Tracker',
     categoryTag: '@elonmusk Tracker',
     messages: [
       {
         sender: 'USER',
         time: '09:12',
-        text: 'Watch @elonmusk and @unusual_whales for TSLA signals via Monid.',
+        text: 'Watch @elonmusk and @unusual_whales for TSLA signals.',
       },
       {
         sender: 'AFTERBELL_AGENT',
         time: '09:12',
-        text: 'On it. Watching X feeds via Monid pay-per-use data layer.',
+        text: "On it. Watching X feeds for market-moving commentary in real-time.",
         meta: 'Monitoring @elonmusk · @unusual_whales',
       },
       {

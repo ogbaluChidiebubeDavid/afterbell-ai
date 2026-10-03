@@ -42,9 +42,9 @@ export class AuditLoggerService {
           { rule: "Paper Mode Lock", passed: true, detail: "Bitget Agentic Account isolated" }
         ],
       },
-      imessageAlertSent: true,
-      imessageSentTimestamp: new Date(Date.now() - 1000 * 60 * 18).toISOString(),
-      channel: "iMessage",
+      messageAlertSent: true,
+      messageSentTimestamp: new Date(Date.now() - 1000 * 60 * 18).toISOString(),
+      channel: "Messenger",
     },
     {
       id: "prop-mstr-hist",
@@ -85,8 +85,8 @@ export class AuditLoggerService {
         ],
       },
       orderExecutionId: "bg_paper_mstr_01",
-      imessageAlertSent: true,
-      channel: "iMessage",
+      messageAlertSent: true,
+      channel: "Messenger",
     },
     {
       id: "prop-rejected-risk-example",
@@ -127,7 +127,7 @@ export class AuditLoggerService {
           { rule: "Confidence Gate", passed: false, detail: "68% fails >= 75% cutoff" },
         ],
       },
-      imessageAlertSent: false,
+      messageAlertSent: false,
       channel: "Direct_API",
     },
     {
@@ -154,7 +154,7 @@ export class AuditLoggerService {
       riskFlags: ["Broad macro beta rather than idiosyncratic catalyst"],
       riskCheckStatus: "PASSED",
       humanApprovalStatus: "REJECTED",
-      rejectionReason: "User replied 'NO' via iMessage: Preferred conserving cash for higher-conviction NVDA event.",
+      rejectionReason: "User replied 'NO' via Messenger: Preferred conserving cash for higher-conviction NVDA event.",
       dryRun: {
         passed: true,
         simulatedPrice: 226.50,
@@ -165,8 +165,8 @@ export class AuditLoggerService {
         liquidityDepthUsdt: 65000,
         checks: [{ rule: "Risk Gate", passed: true, detail: "All rules cleared" }],
       },
-      imessageAlertSent: true,
-      channel: "iMessage",
+      messageAlertSent: true,
+      channel: "Messenger",
     },
   ];
 

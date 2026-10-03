@@ -1,0 +1,399 @@
+import { TradeProposal } from '../types/proposals';
+import { AuditLoggerService } from './audit-logger';
+import { BitgetHubClientService } from './bitget-hub-client';
+import { PortfolioManagerService } from './portfolio-manager';
+import { StrategyModuleService } from './strategy-modules';
+
+export interface ChatMessage {
+  id: string;
+  sender: 'AFTERBELL_AGENT' | 'USER';
+  timestamp: string;
+  text: string;
+  proposalId?: string;
+  isActionable?: boolean;
+  meta?: string;
+}
+
+export interface DispatchResult {
+  success: boolean;
+  mode: 'LIVE' | 'SIMULATOR';
+  recipient?: string;
+  status?: number;
+  error?: string;
+  responseData?: any;
+}
+
+export class MessagingChannelService {
+  private static activeRecipientId: string | null = null;
+  private static chatHistory: ChatMessage[] = [
+    {
+      id: "msg-welcome-01",
+      sender: "AFTERBELL_AGENT",
+      timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+      text: "🔔 Afterbell Agent connected via Facebook Messenger. Watching US Equities After-Hours & Weekend Gap for Bitget rToken trading.\n\nType STATUS anytime, or MENU to choose what conditions to watch around the clock.",
+    },
+    {
+      id: "msg-alert-nvda",
+      sender: "AFTERBELL_AGENT",
+      timestamp: new Date(Date.now() - 1000 * 60 * 18).toISOString(),
+      proposalId: "prop-nvda-demo",
+      isActionable: true,
+      text: `🚨 AFTERBELL ALERT [Weekend Gap]
+Target: rNVDA (NVIDIA Corp Tokenized)
+Direction: LONG @ $128.45
+Size: $440.00 USDT (~3.42 rNVDA)
+Confidence: 89%
+
+Rationale: US Commerce Dept clarified Blackwell export licensing to Middle East cloud hubs, removing blanket ban overhang. US markets closed until Monday 9:30 AM EST. Bitget rToken volume active.
+
+DryRun: PASSED (Est. slippage: 0.04%, Fee: $0.44 USDT)
+
+Reply "YES" to approve paper order, or "NO" to discard.`,
+    },
+  ];
+
+  /**
+   * Sets the active Facebook Messenger recipient ID (PSID)
+   */
+  static setActiveRecipient(recipientId: string) {
+    if (recipientId && recipientId.trim()) {
+      this.activeRecipientId = recipientId.trim();
+      console.log(`[MessagingChannel] Active recipient ID set to: ${this.activeRecipientId}`);
+    }
+  }
+
+  /**
+   * Retrieves active recipient or falls back to environment configuration
+   */
+  static getActiveRecipient(): string | null {
+    return (
+      this.activeRecipientId ||
+      process.env.MESSENGER_RECIPIENT_ID ||
+      process.env.MESSENGER_RECIPIENT_PSID ||
+      null
+    );
+  }
+
+  /**
+   * Returns true if Facebook Messenger access token is configured
+   */
+  static isConfigured(): boolean {
+    const token =
+      process.env.MESSENGER_PAGE_TOKEN ||
+      process.env.MESSENGER_PAGE_ACCESS_TOKEN;
+    return Boolean(token && token.trim());
+  }
+
+  /**
+   * Formats trade proposal alert with explainable thesis and dryRun preview
+   */
+  static formatAlertText(proposal: TradeProposal): string {
+    return `🚨 AFTERBELL ALERT [${proposal.underlying}]
+Target: ${proposal.asset}
+Direction: ${proposal.direction} @ $${proposal.entryPrice.toFixed(2)}
+Size: $${proposal.positionSizeUsdt.toFixed(2)} USDT (~${proposal.positionSizeTokens} ${proposal.asset})
+Confidence: ${proposal.confidenceScore}%
+
+Rationale: ${proposal.rationale.afterHoursInformationGap}
+
+DryRun: ${proposal.dryRun.passed ? 'PASSED' : 'FLAGGED'} (Est. slippage: ${proposal.dryRun.estimatedSlippagePercent}%, Fee: $${proposal.dryRun.estimatedFeeUsdt.toFixed(2)} USDT)
+
+Reply "YES" to approve paper order, or "NO" to discard.`;
+  }
+
+  /**
+   * Sends a message to the user via Facebook Messenger Send API
+   */
+  static async notifyUser(
+    text: string,
+    overrideRecipient?: string,
+    quickReplies?: Array<{ title: string; payload: string }>
+  ): Promise<DispatchResult> {
+    const accessToken = (
+      process.env.MESSENGER_PAGE_TOKEN ||
+      process.env.MESSENGER_PAGE_ACCESS_TOKEN ||
+      ''
+    ).trim();
+
+    const recipientId = overrideRecipient || this.getActiveRecipient();
+
+    if (!accessToken || !recipientId) {
+      console.log('[MessagingChannel] Running in local simulator mode.');
+      return {
+        success: true,
+        mode: 'SIMULATOR',
+        recipient: recipientId || 'simulator-user',
+      };
+    }
+
+    try {
+      console.log(`[MessagingChannel] Dispatching via Meta Graph API to: ${recipientId}...`);
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 9000);
+
+      const payload: any = {
+        recipient: { id: recipientId },
+        messaging_type: 'RESPONSE',
+        message: {
+          text,
+        },
+      };
+
+      if (quickReplies && quickReplies.length > 0) {
+        payload.message.quick_replies = quickReplies.map((qr) => ({
+          content_type: 'text',
+          title: qr.title,
+          payload: qr.payload,
+        }));
+      }
+
+      const res = await fetch(
+        `https://graph.facebook.com/v19.0/me/messages?access_token=${encodeURIComponent(accessToken)}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+        }
+      );
+
+      clearTimeout(timeoutId);
+
+      const responseData = await res.json().catch(() => ({ statusText: res.statusText }));
+
+      if (!res.ok) {
+        console.error(`[MessagingChannel] Meta Send API error ${res.status}:`, responseData);
+        return {
+          success: false,
+          mode: 'LIVE',
+          status: res.status,
+          error: `Meta Graph API error HTTP ${res.status}: ${JSON.stringify(responseData)}`,
+          responseData,
+        };
+      }
+
+      console.log(`[MessagingChannel] ✅ Real message delivered on Messenger to ${recipientId}!`);
+      return {
+        success: true,
+        mode: 'LIVE',
+        status: res.status,
+        recipient: recipientId,
+        responseData,
+      };
+    } catch (err: any) {
+      console.error('[MessagingChannel] Network dispatch error:', err.message);
+      return {
+        success: false,
+        mode: 'LIVE',
+        error: err.message,
+      };
+    }
+  }
+
+  /**
+   * Adds an agent message to session history and optionally dispatches to Facebook Messenger
+   */
+  static addAgentMessage(
+    text: string,
+    proposalId?: string,
+    isActionable?: boolean,
+    dispatchReal: boolean = true,
+    quickReplies?: Array<{ title: string; payload: string }>
+  ): ChatMessage {
+    const entry: ChatMessage = {
+      id: `msg-${Date.now().toString(36)}`,
+      sender: 'AFTERBELL_AGENT',
+      timestamp: new Date().toISOString(),
+      text,
+      proposalId,
+      isActionable,
+    };
+    this.chatHistory.push(entry);
+
+    if (dispatchReal) {
+      this.notifyUser(text, undefined, quickReplies).catch((err) => {
+        console.warn('[MessagingChannel] Dispatch notice:', err.message);
+      });
+    }
+
+    return entry;
+  }
+
+  /**
+   * Adds a user message to session history
+   */
+  static addUserMessage(text: string): ChatMessage {
+    const entry: ChatMessage = {
+      id: `msg-${Date.now().toString(36)}`,
+      sender: 'USER',
+      timestamp: new Date().toISOString(),
+      text,
+    };
+    this.chatHistory.push(entry);
+    return entry;
+  }
+
+  /**
+   * Handles incoming text/payload from user and produces appropriate agent action
+   */
+  static async processUserMessage(
+    messageText: string,
+    senderId?: string
+  ): Promise<{ action: string; replyText: string; extra?: any }> {
+    if (senderId) {
+      this.setActiveRecipient(senderId);
+    }
+
+    this.addUserMessage(messageText);
+
+    const isAffirmative = this.isAffirmativeReply(messageText);
+    const isNegative = this.isNegativeReply(messageText);
+    const upper = messageText.toUpperCase();
+
+    // MENU command
+    if (upper === 'MENU' || upper === 'STRATEGIES' || upper === 'CONDITIONS') {
+      const modules = StrategyModuleService.getModules();
+      const replyText =
+        `📋 AFTERBELL STRATEGY CONDITIONS:\nSelect what you want watched around the clock:\n\n` +
+        modules.map((m, i) => `${i + 1}. [${m.isActive ? '✅ ON' : '⚪ OFF'}] ${m.name}`).join('\n') +
+        `\n\nTap a number below (1-4) to toggle conditions, or "STATUS" for live portfolio stats.`;
+
+      const quickReplies = [
+        { title: 'Toggle 1', payload: '1' },
+        { title: 'Toggle 2', payload: '2' },
+        { title: 'Toggle 3', payload: '3' },
+        { title: 'Toggle 4', payload: '4' },
+        { title: 'Portfolio Status', payload: 'STATUS' },
+      ];
+
+      this.addAgentMessage(replyText, undefined, false, true, quickReplies);
+      return { action: 'MENU', replyText };
+    }
+
+    // Number toggles (1-4)
+    if (['1', '2', '3', '4'].includes(messageText)) {
+      const idx = parseInt(messageText, 10) - 1;
+      const modules = StrategyModuleService.getModules();
+      if (modules[idx]) {
+        const updated = StrategyModuleService.toggleModule(modules[idx].id);
+        const replyText = `⚙️ Condition Updated: ${updated?.name} is now ${updated?.isActive ? 'ACTIVATED ✅' : 'DISABLED ⚪'}.\nWatching ${updated?.targets.join(', ')}.`;
+
+        this.addAgentMessage(replyText, undefined, false, true, [
+          { title: 'View Menu', payload: 'MENU' },
+          { title: 'Portfolio Status', payload: 'STATUS' },
+        ]);
+        return { action: 'TOGGLE_STRATEGY', replyText, extra: { module: updated } };
+      }
+    }
+
+    // STATUS command
+    if (upper.includes('STATUS') || upper.includes('PORTFOLIO')) {
+      const port = PortfolioManagerService.getPortfolioState();
+      const activeMods = StrategyModuleService.getActiveModules();
+      const replyText = `📊 AFTERBELL STATUS REPORT:\nMode: --paper-trading (Bitget Agentic Account)\nPortfolio Value: $${port.metrics.currentPortfolioValueUsdt.toFixed(2)} USDT\nRealized P&L: +$${port.metrics.realizedPnlTotalUsdt.toFixed(2)} USDT\nSharpe Ratio: ${port.metrics.sharpeRatio}\nWin Rate: ${port.metrics.winRatePercent}%\nActive Watch Conditions: ${activeMods.map((m) => m.name).join(', ')}`;
+
+      this.addAgentMessage(replyText, undefined, false, true, [
+        { title: 'Strategy Menu', payload: 'MENU' },
+      ]);
+      return { action: 'STATUS_REPORT', replyText };
+    }
+
+    // Proposals & Trade Approval flow
+    const proposals = AuditLoggerService.getAllProposals();
+    const pendingProposal = proposals.find((p) => p.humanApprovalStatus === 'PENDING_APPROVAL');
+
+    if (isAffirmative) {
+      if (!pendingProposal) {
+        const replyText = '⚠️ No trade proposal is currently awaiting approval. Type STATUS or MENU to see active conditions.';
+        this.addAgentMessage(replyText, undefined, false, true, [
+          { title: 'View Menu', payload: 'MENU' },
+          { title: 'Status', payload: 'STATUS' },
+        ]);
+        return { action: 'NO_PENDING_PROPOSAL', replyText };
+      }
+
+      if (pendingProposal.riskCheckStatus === 'REJECTED_BY_RISK_RULE') {
+        const replyText = `🛑 Cannot execute: Proposal for ${pendingProposal.asset} failed automated risk controls (${pendingProposal.riskRejectionReason}).`;
+        this.addAgentMessage(replyText, pendingProposal.id, false, true);
+        return { action: 'RISK_BLOCKED', replyText };
+      }
+
+      // Execute paper order on Bitget Agent Hub
+      const orderResponse = await BitgetHubClientService.placePaperOrder({
+        symbol: `${pendingProposal.asset}USDT`,
+        side: pendingProposal.direction === 'LONG' ? 'buy' : 'sell',
+        orderType: 'market',
+        size: pendingProposal.positionSizeTokens.toString(),
+        clientOid: `afterbell_msg_${pendingProposal.id}`,
+        dryRun: false,
+      });
+
+      AuditLoggerService.updateProposal(pendingProposal.id, {
+        humanApprovalStatus: 'APPROVED',
+        approvalTimestamp: new Date().toISOString(),
+        orderExecutionId: orderResponse.orderId,
+      });
+
+      PortfolioManagerService.openPositionFromOrder(pendingProposal, orderResponse);
+
+      const replyText = `✅ ORDER FILLED [Bitget Agent Hub Paper Trading]\nAsset: ${pendingProposal.asset}\nDirection: ${pendingProposal.direction}\nFill: $${orderResponse.fillPrice.toFixed(2)} USDT\nSize: $${(orderResponse.fillPrice * orderResponse.fillQuantity).toFixed(2)}\nOrder ID: ${orderResponse.orderId}\nAccount: Bitget Agentic (Isolated)`;
+
+      this.addAgentMessage(replyText, pendingProposal.id, false, true, [
+        { title: 'View Status', payload: 'STATUS' },
+        { title: 'Strategy Menu', payload: 'MENU' },
+      ]);
+
+      return {
+        action: 'APPROVED_AND_EXECUTED',
+        replyText,
+        extra: { proposalId: pendingProposal.id, orderId: orderResponse.orderId },
+      };
+    }
+
+    if (isNegative) {
+      if (pendingProposal) {
+        AuditLoggerService.updateProposal(pendingProposal.id, {
+          humanApprovalStatus: 'REJECTED',
+          rejectionReason: 'User declined via reply ("NO")',
+        });
+
+        const replyText = `❌ Trade proposal for ${pendingProposal.asset} was cancelled upon your request. Logged to explainability trail.`;
+
+        this.addAgentMessage(replyText, pendingProposal.id, false, true);
+        return { action: 'REJECTED', replyText, extra: { proposalId: pendingProposal.id } };
+      } else {
+        const replyText = 'Acknowledged. No active proposal was pending.';
+        this.addAgentMessage(replyText, undefined, false, true);
+        return { action: 'NO_OP', replyText };
+      }
+    }
+
+    // Default conversational reply
+    const replyText = `🤖 Afterbell Agent: Received "${messageText}".\nWatching your chosen conditions 24/7.\n• Reply "YES" to approve any pending trade\n• Reply "NO" to reject\n• Tap "MENU" to toggle watched conditions\n• Tap "STATUS" for portfolio stats.`;
+
+    this.addAgentMessage(replyText, undefined, false, true, [
+      { title: 'Approve Trade', payload: 'YES' },
+      { title: 'Strategy Menu', payload: 'MENU' },
+      { title: 'Portfolio Status', payload: 'STATUS' },
+    ]);
+
+    return { action: 'REPLIED', replyText };
+  }
+
+  static getChatHistory(): ChatMessage[] {
+    return [...this.chatHistory];
+  }
+
+  static isAffirmativeReply(text: string): boolean {
+    const clean = text.trim().toLowerCase();
+    return clean === 'yes' || clean === 'y' || clean === 'approve' || clean === 'confirm' || clean === 'execute' || clean === 'buy' || clean === 'trade';
+  }
+
+  static isNegativeReply(text: string): boolean {
+    const clean = text.trim().toLowerCase();
+    return clean === 'no' || clean === 'n' || clean === 'reject' || clean === 'cancel' || clean === 'deny' || clean === 'skip';
+  }
+}

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AuditLoggerService } from '@/services/audit-logger';
 import { BitgetHubClientService } from '@/services/bitget-hub-client';
 import { PortfolioManagerService } from '@/services/portfolio-manager';
-import { PhotonClientService } from '@/services/photon-client';
+import { MessagingChannelService } from '@/services/messaging-channel';
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,13 +19,13 @@ export async function POST(req: NextRequest) {
     }
 
     if (action === 'REJECT') {
-      const reason = rejectionReason || 'User rejected trade proposal via iMessage interface';
+      const reason = rejectionReason || 'User rejected trade proposal via Messenger interface';
       AuditLoggerService.updateProposal(proposalId, {
         humanApprovalStatus: 'REJECTED',
         rejectionReason: reason,
       });
 
-      PhotonClientService.addAgentMessage(
+      MessagingChannelService.addAgentMessage(
         `❌ Trade proposal for ${proposal.asset} was REJECTED (${reason}). No orders were dispatched.`,
         proposalId,
         false
@@ -72,8 +72,8 @@ export async function POST(req: NextRequest) {
       // Update paper portfolio
       const position = PortfolioManagerService.openPositionFromOrder(proposal, orderResponse);
 
-      // Send confirmation to iMessage
-      PhotonClientService.addAgentMessage(
+      // Send confirmation to Messenger
+      MessagingChannelService.addAgentMessage(
         `✅ ORDER EXECUTED [Bitget Agent Hub Paper Trading]\nAsset: ${proposal.asset}\nSide: ${proposal.direction}\nFill Price: $${orderResponse.fillPrice.toFixed(2)} USDT\nQty: ${orderResponse.fillQuantity} tokens ($${(orderResponse.fillPrice * orderResponse.fillQuantity).toFixed(2)})\nOrder ID: ${orderResponse.orderId}\nMode: --paper-trading (Isolated Account)`,
         proposalId,
         false

@@ -56,9 +56,9 @@ export interface TradeProposal {
   rejectionReason?: string;
   dryRun: DryRunResult;
   orderExecutionId?: string;
-  imessageAlertSent: boolean;
-  imessageSentTimestamp?: string;
-  channel: 'iMessage' | 'Web_Simulator' | 'Direct_API';
+  messageAlertSent: boolean;
+  messageSentTimestamp?: string;
+  channel: 'Messenger' | 'Web_Simulator' | 'Direct_API';
 }
 
 export interface TradeProposalFilter {

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AuditLoggerService } from '@/services/audit-logger';
 import { PortfolioManagerService } from '@/services/portfolio-manager';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);

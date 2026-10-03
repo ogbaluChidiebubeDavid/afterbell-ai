@@ -85,9 +85,9 @@ export class DecisionEngineService {
       riskRejectionReason: riskEval.rejectionReason,
       humanApprovalStatus: 'PENDING_APPROVAL',
       dryRun,
-      imessageAlertSent: true,
-      imessageSentTimestamp: new Date().toISOString(),
-      channel: 'iMessage',
+      messageAlertSent: true,
+      messageSentTimestamp: new Date().toISOString(),
+      channel: 'Messenger',
     };
 
     return proposal;

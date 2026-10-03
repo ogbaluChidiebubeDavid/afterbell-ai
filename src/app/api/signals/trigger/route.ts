@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { SignalAggregatorService } from '@/services/signal-aggregator';
 import { DecisionEngineService } from '@/services/decision-engine';
 import { AuditLoggerService } from '@/services/audit-logger';
-import { PhotonClientService } from '@/services/photon-client';
+import { MessagingChannelService } from '@/services/messaging-channel';
 import { PortfolioManagerService } from '@/services/portfolio-manager';
 
 export async function POST(req: NextRequest) {
@@ -37,9 +37,13 @@ export async function POST(req: NextRequest) {
     // Save to audit log
     AuditLoggerService.addProposal(proposal);
 
-    // Dispatch to iMessage channel (Photon & simulator)
-    const alertText = PhotonClientService.formatAlertText(proposal);
-    PhotonClientService.addAgentMessage(alertText, proposal.id, true);
+    // Dispatch to Facebook Messenger channel
+    const alertText = MessagingChannelService.formatAlertText(proposal);
+    MessagingChannelService.addAgentMessage(alertText, proposal.id, true, true, [
+      { title: 'Reply YES', payload: 'YES' },
+      { title: 'Reply NO', payload: 'NO' },
+      { title: 'View Status', payload: 'STATUS' },
+    ]);
 
     return NextResponse.json({
       success: true,
@@ -47,7 +51,7 @@ export async function POST(req: NextRequest) {
         catalyst,
         proposal,
       },
-      message: 'Catalyst triggered, proposal reasoned, and iMessage alert dispatched.',
+      message: 'Catalyst triggered, proposal reasoned, and trade alert dispatched.',
     });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

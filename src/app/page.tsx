@@ -5,8 +5,12 @@ import {
   Bell,
   ArrowUpRight,
   MessageCircle,
+  ExternalLink,
+  Smartphone,
+  X,
+  Check,
 } from 'lucide-react';
-import { IPhoneFrame } from '@/components/iphone-frame';
+import { MessengerFrame } from '@/components/messenger-frame';
 import { ArtifactsModal } from '@/components/artifacts-modal';
 import { PortfolioState } from '@/types/portfolio';
 import { TradeProposal } from '@/types/proposals';
@@ -18,6 +22,10 @@ export default function LandingPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTab, setModalTab] = useState<'portfolio' | 'audit' | 'submission' | 'messenger'>('messenger');
+
+  // Page URL Direct Connect State
+  const [isPagePromptOpen, setIsPagePromptOpen] = useState(false);
+  const [customPageUrl, setCustomPageUrl] = useState('');
 
   // Fetch portfolio and proposals data for the modal
   const loadData = async () => {
@@ -37,6 +45,8 @@ export default function LandingPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
     loadData();
+    const saved = localStorage.getItem('afterbell_page_url');
+    if (saved) setCustomPageUrl(saved);
     const interval = setInterval(loadData, 8000);
     return () => clearInterval(interval);
   }, []);
@@ -55,6 +65,36 @@ export default function LandingPage() {
     } finally {
       setIsSending(false);
     }
+  };
+
+  const handleOpenMessenger = () => {
+    const configuredUrl =
+      process.env.NEXT_PUBLIC_MESSENGER_PAGE_URL ||
+      localStorage.getItem('afterbell_page_url');
+
+    if (configuredUrl && configuredUrl.trim()) {
+      const trimmed = configuredUrl.trim();
+      const targetUrl = trimmed.startsWith('http')
+        ? trimmed
+        : `https://m.me/${trimmed.replace(/^@/, '')}`;
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    } else {
+      setIsPagePromptOpen(true);
+    }
+  };
+
+  const handleSaveAndLaunchMessenger = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!customPageUrl.trim()) return;
+
+    const trimmed = customPageUrl.trim();
+    localStorage.setItem('afterbell_page_url', trimmed);
+    const targetUrl = trimmed.startsWith('http')
+      ? trimmed
+      : `https://m.me/${trimmed.replace(/^@/, '')}`;
+
+    setIsPagePromptOpen(false);
+    window.open(targetUrl, '_blank', 'noopener,noreferrer');
   };
 
   const openModal = (tab: 'portfolio' | 'audit' | 'submission' | 'messenger') => {
@@ -82,10 +122,11 @@ export default function LandingPage() {
             </span>
           </div>
 
-          {/* Right: Connect Messenger CTA & GitHub Button */}
+          {/* Right: Direct Messenger Launch & GitHub Button */}
           <div className="flex items-center gap-2.5">
             <button
-              onClick={() => openModal('messenger')}
+              onClick={handleOpenMessenger}
+              title="Open Afterbell in Facebook Messenger"
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#0084ff] hover:bg-[#0070d6] text-white transition-all shadow-md shadow-blue-500/20 active:scale-95 cursor-pointer"
             >
               <MessageCircle className="w-3.5 h-3.5" />
@@ -112,7 +153,7 @@ export default function LandingPage() {
         <main className="my-auto py-1 sm:py-2 flex items-center justify-center flex-1 relative z-10 overflow-visible">
           <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(300px,0.85fr)] lg:gap-10 w-full">
             
-            {/* Left Column: Clean Typography & Direct Action */}
+            {/* Left Column: Clean Typography & Direct Messenger Launch */}
             <section className="max-w-[760px] space-y-4 sm:space-y-5">
               
               {/* Track Pill */}
@@ -138,22 +179,29 @@ export default function LandingPage() {
                 Choose a strategy like tracking congressional trades, following specific X accounts, watching new IPO filings, or after-hours rToken pricing. You set the conditions, your agent runs around the clock and messages you on Facebook Messenger the moment it spots a signal.
               </p>
 
-              {/* Strategic Primary CTA */}
-              <div className="pt-2">
+              {/* Strategic Primary CTA - Directly Opens Messenger Chatbox */}
+              <div className="pt-2 flex flex-wrap items-center gap-3">
                 <button
-                  onClick={() => openModal('messenger')}
+                  onClick={handleOpenMessenger}
                   className="px-6 py-3 rounded-full text-sm font-semibold bg-[#0084ff] hover:bg-[#0070d6] text-white flex items-center gap-2.5 shadow-lg shadow-blue-500/25 active:scale-95 transition-all cursor-pointer"
                 >
                   <MessageCircle className="w-4 h-4" />
                   <span>Launch on Facebook Messenger</span>
                 </button>
+
+                <button
+                  onClick={() => openModal('messenger')}
+                  className="px-4 py-2.5 rounded-full text-xs font-medium text-[#888] hover:text-[#ccc] bg-[#161616] hover:bg-[#202020] border border-[#262626] transition-all cursor-pointer"
+                >
+                  Webhook Settings
+                </button>
               </div>
 
             </section>
 
-            {/* Right Column: Phone mockup — top-aligned, interactive simulator */}
+            {/* Right Column: Messenger Frame — Interactive Simulator */}
             <div className="w-full flex items-start justify-center lg:justify-end pt-4 lg:pt-0">
-              <IPhoneFrame
+              <MessengerFrame
                 onSendMessage={handleSendMessage}
                 isSending={isSending}
               />
@@ -170,6 +218,75 @@ export default function LandingPage() {
         </footer>
 
       </div>
+
+      {/* Direct Messenger Chatbox Link Prompt Modal */}
+      {isPagePromptOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div className="relative w-full max-w-md bg-[#161618] border border-[#2d2d30] rounded-3xl p-6 shadow-2xl text-[#eeeeeb] space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-[#242426]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-[#0084ff]/20 flex items-center justify-center">
+                  <MessageCircle className="w-4 h-4 text-[#0084ff]" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-white">Open in Facebook Messenger</h3>
+                  <p className="text-[11px] text-[#888]">Direct link to your trading assistant bot</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsPagePromptOpen(false)}
+                className="w-7 h-7 rounded-full bg-[#222] hover:bg-[#333] flex items-center justify-center text-[#999] hover:text-white transition-colors"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveAndLaunchMessenger} className="space-y-3">
+              <div>
+                <label className="text-[11px] font-medium text-[#aaa] block mb-1">
+                  Facebook Page Username or Link:
+                </label>
+                <div className="flex items-center bg-[#101010] rounded-xl border border-[#333] px-3 py-2 text-xs">
+                  <span className="text-[#666] mr-1">m.me/</span>
+                  <input
+                    type="text"
+                    value={customPageUrl.replace(/^https?:\/\/m\.me\//, '').replace(/^@/, '')}
+                    onChange={(e) => setCustomPageUrl(e.target.value)}
+                    placeholder="your-page-username"
+                    className="flex-1 bg-transparent text-white focus:outline-none font-mono"
+                    autoFocus
+                  />
+                </div>
+                <p className="text-[10px] text-[#666] mt-1">
+                  Found in your Facebook Page URL or Meta Dashboard (e.g. <code>AfterbellAI</code>).
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 pt-1">
+                <button
+                  type="submit"
+                  disabled={!customPageUrl.trim()}
+                  className="flex-1 py-2.5 rounded-xl text-xs font-semibold bg-[#0084ff] hover:bg-[#0070d6] text-white flex items-center justify-center gap-1.5 disabled:opacity-40 transition-all cursor-pointer shadow-lg shadow-blue-500/20"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Open Messenger Chatbox</span>
+                </button>
+              </div>
+            </form>
+
+            <div className="pt-2 border-t border-[#222] flex items-center justify-between text-[11px] text-[#888]">
+              <span>Prefer testing on this page?</span>
+              <button
+                onClick={() => setIsPagePromptOpen(false)}
+                className="text-[#0084ff] hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <Smartphone className="w-3 h-3" />
+                Use Web Simulator →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Artifacts, Submission & Messenger Modal */}
       <ArtifactsModal

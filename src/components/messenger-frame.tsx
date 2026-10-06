@@ -154,14 +154,14 @@ export const AUTOMATED_SCENARIOS: StrategyScenario[] = [
   },
 ];
 
-interface IPhoneFrameProps {
+export interface MessengerFrameProps {
   onSendMessage: (text: string) => Promise<void>;
   isSending: boolean;
   selectedScenarioIndex?: number;
   onSelectScenario?: (index: number) => void;
 }
 
-export const IPhoneFrame: React.FC<IPhoneFrameProps> = ({
+export const MessengerFrame: React.FC<MessengerFrameProps> = ({
   onSendMessage,
   isSending,
   selectedScenarioIndex,
@@ -252,7 +252,7 @@ export const IPhoneFrame: React.FC<IPhoneFrameProps> = ({
   return (
     <div className="relative mx-auto" style={{ width: 'min(300px, 88vw)' }}>
 
-      {/* iPhone 16 Pro outer shell */}
+      {/* Messenger mobile device shell */}
       <div
         className="relative w-full rounded-[52px] shadow-[0_32px_80px_rgba(0,0,0,0.75),0_0_0_1px_rgba(255,255,255,0.07)]"
         style={{
@@ -454,3 +454,5 @@ export const IPhoneFrame: React.FC<IPhoneFrameProps> = ({
     </div>
   );
 };
+
+export const IPhoneFrame = MessengerFrame;

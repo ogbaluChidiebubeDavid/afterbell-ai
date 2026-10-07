@@ -8,7 +8,7 @@ export interface StrategyScenario {
   name: string;
   categoryTag: string;
   messages: {
-    sender: 'AFTERBELL_AGENT' | 'USER';
+    sender: 'EXBIT_AGENT' | 'USER';
     time: string;
     text: string;
     meta?: string;
@@ -27,13 +27,13 @@ export const AUTOMATED_SCENARIOS: StrategyScenario[] = [
         text: 'Run Pelosi Watch on NVDA and TSLA.',
       },
       {
-        sender: 'AFTERBELL_AGENT',
+        sender: 'EXBIT_AGENT',
         time: '18:14',
         text: "Done. I'll monitor new STOCK Act disclosures and price momentum.",
         meta: 'Strategy live · NVDA + TSLA',
       },
       {
-        sender: 'AFTERBELL_AGENT',
+        sender: 'EXBIT_AGENT',
         time: '18:32',
         text: '🚨 Pelosi filed: 50x NVDA $120 Calls ($1.25M). rNVDA @ $128.45 now.\n\nLONG rNVDA $440 — Confidence 92%\n\nReply YES to execute.',
       },
@@ -43,7 +43,7 @@ export const AUTOMATED_SCENARIOS: StrategyScenario[] = [
         text: 'YES',
       },
       {
-        sender: 'AFTERBELL_AGENT',
+        sender: 'EXBIT_AGENT',
         time: '18:33',
         text: '✅ Filled: 3.42 rNVDA @ $128.45\nOrder ID: bg_paper_plsi_928f',
         meta: 'Bitget Paper · Isolated Account',
@@ -61,13 +61,13 @@ export const AUTOMATED_SCENARIOS: StrategyScenario[] = [
         text: 'Watch @elonmusk and @unusual_whales for TSLA signals.',
       },
       {
-        sender: 'AFTERBELL_AGENT',
+        sender: 'EXBIT_AGENT',
         time: '09:12',
         text: "On it. Watching X feeds for market-moving commentary in real-time.",
         meta: 'Monitoring @elonmusk · @unusual_whales',
       },
       {
-        sender: 'AFTERBELL_AGENT',
+        sender: 'EXBIT_AGENT',
         time: '09:28',
         text: '🚨 @elonmusk: "FSD v13 permits granted for Shanghai fleet."\n\nrTSLA @ $242.80 ↑\nLONG $400 — Confidence 86%\n\nReply YES to execute.',
       },
@@ -77,7 +77,7 @@ export const AUTOMATED_SCENARIOS: StrategyScenario[] = [
         text: 'YES',
       },
       {
-        sender: 'AFTERBELL_AGENT',
+        sender: 'EXBIT_AGENT',
         time: '09:29',
         text: '✅ Filled: 1.65 rTSLA @ $242.80\nOrder ID: bg_paper_tsla_412e',
         meta: 'Bitget Paper · Isolated Account',
@@ -95,13 +95,13 @@ export const AUTOMATED_SCENARIOS: StrategyScenario[] = [
         text: 'Watch SEC S-1 filings for AI and cloud infrastructure.',
       },
       {
-        sender: 'AFTERBELL_AGENT',
+        sender: 'EXBIT_AGENT',
         time: '14:05',
         text: 'Active. Scanning EDGAR for new S-1 / 8-K filings now.',
         meta: 'Watching AI · Cloud · Silicon',
       },
       {
-        sender: 'AFTERBELL_AGENT',
+        sender: 'EXBIT_AGENT',
         time: '14:22',
         text: '🚨 S-1 amendment: $4.2B accelerator procurement with Tier-1 silicon partners.\n\nLONG rNVDA @ $128.45 ($450)\nConfidence 88%\n\nReply YES to execute.',
       },
@@ -111,7 +111,7 @@ export const AUTOMATED_SCENARIOS: StrategyScenario[] = [
         text: 'YES',
       },
       {
-        sender: 'AFTERBELL_AGENT',
+        sender: 'EXBIT_AGENT',
         time: '14:23',
         text: '✅ Filled: 3.50 rNVDA @ $128.45\nOrder ID: bg_paper_s1_78a1',
         meta: 'Bitget Paper · Isolated Account',
@@ -129,13 +129,13 @@ export const AUTOMATED_SCENARIOS: StrategyScenario[] = [
         text: 'Monitor weekend rToken pricing for MSTR.',
       },
       {
-        sender: 'AFTERBELL_AGENT',
+        sender: 'EXBIT_AGENT',
         time: '21:10',
         text: 'Running. 24/7 rToken engine active for weekend gap.',
         meta: 'Tracking rMSTR · rNVDA · rTSLA',
       },
       {
-        sender: 'AFTERBELL_AGENT',
+        sender: 'EXBIT_AGENT',
         time: '21:40',
         text: '🚨 BTC +4.8% → MSTR beta implies +5.4% Monday reopen gap.\n\nLONG rMSTR @ $134.20 ($350)\nConfidence 91%\n\nReply YES to execute.',
       },
@@ -145,7 +145,7 @@ export const AUTOMATED_SCENARIOS: StrategyScenario[] = [
         text: 'YES',
       },
       {
-        sender: 'AFTERBELL_AGENT',
+        sender: 'EXBIT_AGENT',
         time: '21:41',
         text: '✅ Filled: 2.61 rMSTR @ $134.20\nOrder ID: bg_paper_mstr_891d',
         meta: 'Bitget Paper · Isolated Account',
@@ -215,7 +215,7 @@ export const MessengerFrame: React.FC<MessengerFrameProps> = ({
         setCustomMessages((prev) => [
           ...prev,
           {
-            sender: 'AFTERBELL_AGENT',
+            sender: 'EXBIT_AGENT',
             time: 'now',
             text: '✅ Order executed on Bitget paper account.\nPosition open.',
             meta: 'Bitget Paper · Isolated Account',
@@ -225,7 +225,7 @@ export const MessengerFrame: React.FC<MessengerFrameProps> = ({
         setCustomMessages((prev) => [
           ...prev,
           {
-            sender: 'AFTERBELL_AGENT',
+            sender: 'EXBIT_AGENT',
             time: 'now',
             text: '❌ Proposal cancelled. No order placed.',
           },
@@ -295,9 +295,9 @@ export const MessengerFrame: React.FC<MessengerFrameProps> = ({
           {/* Contact header - centered avatar + name, Messenger thread top */}
           <div className="px-4 pb-3 flex flex-col items-center shrink-0 z-20">
             <div className="w-[52px] h-[52px] rounded-full bg-gradient-to-tr from-[#0a84ff] to-[#00c6ff] flex items-center justify-center text-white font-bold text-[14px] shadow-lg shadow-blue-500/20 mb-1.5">
-              AB
+              EX
             </div>
-            <span className="text-[13px] font-semibold text-white tracking-tight">Afterbell</span>
+            <span className="text-[13px] font-semibold text-white tracking-tight">Exbit</span>
             <span className="text-[11px] text-[#0084ff] font-medium flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-[#0084ff] animate-pulse"></span>
               Messenger • Active Now
@@ -315,7 +315,7 @@ export const MessengerFrame: React.FC<MessengerFrameProps> = ({
               className="h-full overflow-y-auto px-4 pt-3 pb-4 space-y-3 no-scrollbar"
             >
               {activeMessages.map((msg, index) => {
-                const isAgent = msg.sender === 'AFTERBELL_AGENT';
+                const isAgent = msg.sender === 'EXBIT_AGENT';
                 return (
                   <div
                     key={index}
@@ -323,14 +323,14 @@ export const MessengerFrame: React.FC<MessengerFrameProps> = ({
                   >
                     {isAgent && (
                       <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-[#0a84ff] to-[#00c6ff] flex items-center justify-center text-white font-bold text-[8px] shrink-0 mb-0.5">
-                        AB
+                        EX
                       </div>
                     )}
 
                     <div className={`flex flex-col ${isAgent ? 'items-start' : 'items-end'} max-w-[82%]`}>
                       {isAgent && (
                         <span className="text-[10px] text-[#8e8e93] mb-1 ml-0.5 font-medium">
-                          Afterbell
+                          Exbit
                         </span>
                       )}
 

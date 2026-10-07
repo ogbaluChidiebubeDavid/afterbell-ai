@@ -2,7 +2,7 @@ export interface USMarketState {
   isUsEquitiesOpen: boolean;
   sessionType: 'WEEKEND_CLOSED' | 'OVERNIGHT_CLOSED' | 'AFTER_HOURS' | 'PRE_MARKET' | 'REGULAR_HOURS';
   sessionName: string;
-  isAfterbellWindowActive: boolean; // True when US is closed (Weekend / Overnight)
+  isOffHoursActive: boolean; // True when US is closed (Weekend / Overnight)
   nyTimeFormatted: string;
   utcTimeFormatted: string;
   secondsUntilNextOpen: number;
@@ -51,38 +51,38 @@ export class MarketClockService {
     let sessionType: USMarketState['sessionType'] = 'REGULAR_HOURS';
     let sessionName = 'US Regular Market Open (NYSE / NASDAQ)';
     let isUsEquitiesOpen = false;
-    let isAfterbellWindowActive = false;
+    let isOffHoursActive = false;
     let edgeExplanation = '';
 
     if (isWeekend || isFridayAfterClose || (weekday === 'Mon' && timeInMinutes < 4 * 60)) {
       sessionType = 'WEEKEND_CLOSED';
       sessionName = 'Weekend Gap (US Equities Closed ~65.5h)';
       isUsEquitiesOpen = false;
-      isAfterbellWindowActive = true;
-      edgeExplanation = 'Native US stock exchanges are completely shut. Global breaking events, central bank chatter, and crypto weekend moves are accumulating. Bitget rTokens trade 24/7, giving Afterbell first-mover pricing edge.';
+      isOffHoursActive = true;
+      edgeExplanation = 'Native US stock exchanges are completely shut. Global breaking events, central bank chatter, and crypto weekend moves are accumulating. Bitget rTokens trade 24/7, giving Exbit first-mover pricing edge.';
     } else if (timeInMinutes >= 20 * 60 || timeInMinutes < 4 * 60) {
       sessionType = 'OVERNIGHT_CLOSED';
       sessionName = 'US Overnight Session (Markets Fully Closed)';
       isUsEquitiesOpen = false;
-      isAfterbellWindowActive = true;
+      isOffHoursActive = true;
       edgeExplanation = 'US equities closed overnight until morning pre-market. Asian & European breaking news flows into rToken markets on Bitget ahead of Wall Street.';
     } else if (timeInMinutes >= 16 * 60 && timeInMinutes < 20 * 60) {
       sessionType = 'AFTER_HOURS';
       sessionName = 'US Extended After-Hours (Thin Liquidity)';
       isUsEquitiesOpen = false;
-      isAfterbellWindowActive = true;
+      isOffHoursActive = true;
       edgeExplanation = 'Wall Street regular session closed. Earnings releases and after-hours disclosures are being absorbed.';
     } else if (timeInMinutes >= 4 * 60 && timeInMinutes < 9 * 60 + 30) {
       sessionType = 'PRE_MARKET';
       sessionName = 'US Pre-Market Session';
       isUsEquitiesOpen = false;
-      isAfterbellWindowActive = false;
+      isOffHoursActive = false;
       edgeExplanation = 'Early pre-market quotes emerging; final window before 9:30 AM EST regular opening bell.';
     } else {
       sessionType = 'REGULAR_HOURS';
       sessionName = 'US Regular Session (9:30 AM - 4:00 PM EST)';
       isUsEquitiesOpen = true;
-      isAfterbellWindowActive = false;
+      isOffHoursActive = false;
       edgeExplanation = 'Standard NYSE/NASDAQ hours. Arbitrage between native stock and rToken tightest.';
     }
 
@@ -102,7 +102,7 @@ export class MarketClockService {
       isUsEquitiesOpen,
       sessionType,
       sessionName,
-      isAfterbellWindowActive,
+      isOffHoursActive,
       nyTimeFormatted,
       utcTimeFormatted,
       secondsUntilNextOpen,

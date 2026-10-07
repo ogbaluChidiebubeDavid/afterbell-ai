@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
         side: proposal.direction === 'LONG' ? 'buy' : 'sell',
         orderType: 'market',
         size: proposal.positionSizeTokens.toString(),
-        clientOid: `afterbell_${proposal.id}`,
+        clientOid: `exbit_${proposal.id}`,
         dryRun: false,
       });
 

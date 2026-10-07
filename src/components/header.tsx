@@ -30,7 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-lg tracking-tight text-white flex items-center gap-1">
-                  Afterbell<span className="text-cyan-400">.ai</span>
+                  Exbit<span className="text-cyan-400">.ai</span>
                 </span>
                 <span className="text-[10px] uppercase font-semibold tracking-wider px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
                   Bitget S2

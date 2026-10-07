@@ -3,7 +3,7 @@ import { WATCHLIST_RTOKENS } from '../config/rtokens';
 
 export class BitgetHubClientService {
   private static paperTradingMode: boolean = true;
-  private static accountId: string = "bitget_agentic_afterbell_paper_01";
+  private static accountId: string = "bitget_agentic_exbit_paper_01";
   private static availableUsdt: number = 2450.00;
   private static lockedUsdt: number = 550.00;
   private static executedOrders: BitgetOrderResponse[] = [];
@@ -29,7 +29,7 @@ export class BitgetHubClientService {
    */
   static async placePaperOrder(request: BitgetOrderRequest): Promise<BitgetOrderResponse> {
     if (!this.paperTradingMode) {
-      throw new Error("CRITICAL SAFETY GUARD: Live execution disabled. Afterbell only executes in --paper-trading mode.");
+      throw new Error("CRITICAL SAFETY GUARD: Live execution disabled. Exbit only executes in --paper-trading mode.");
     }
 
     const token = WATCHLIST_RTOKENS.find(t => t.bitgetPair === request.symbol || t.symbol === request.symbol);

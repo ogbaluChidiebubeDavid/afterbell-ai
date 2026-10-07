@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
       const portfolio = PortfolioManagerService.getPortfolioState();
 
       const exportPayload = {
-        project: "Afterbell - Agentic Trading Assistant",
+        project: "Exbit - Agentic Trading Assistant",
         hackathon: "Bitget AI Base Camp Hackathon S2",
         track: "Agentic Trading (Event-Driven / After-Hours Pricing)",
         generatedAt: new Date().toISOString(),
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
       return new NextResponse(JSON.stringify(exportPayload, null, 2), {
         headers: {
           'Content-Type': 'application/json',
-          'Content-Disposition': 'attachment; filename="afterbell_paper_trading_audit_log.json"',
+          'Content-Disposition': 'attachment; filename="exbit_paper_trading_audit_log.json"',
         },
       });
     }
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
     return new NextResponse(csvContent, {
       headers: {
         'Content-Type': 'text/csv',
-        'Content-Disposition': 'attachment; filename="afterbell_paper_trading_audit_log.csv"',
+        'Content-Disposition': 'attachment; filename="exbit_paper_trading_audit_log.csv"',
       },
     });
   } catch (error: any) {

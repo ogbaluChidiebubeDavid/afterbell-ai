@@ -83,7 +83,7 @@ export const ArtifactsModal: React.FC<ArtifactsModalProps> = ({
         {/* Modal Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-4 border-b border-[#242424] bg-[#181818]">
           <div className="flex items-center gap-3">
-            <span className="font-semibold text-sm tracking-tight">Afterbell Artifacts &amp; Judge Review Surface</span>
+            <span className="font-semibold text-sm tracking-tight">Exbit Artifacts &amp; Judge Review Surface</span>
             <span className="text-[10px] text-[#10b981] font-mono bg-[#10b981]/10 px-2 py-0.5 rounded-full border border-[#10b981]/20">
               --paper-trading
             </span>
@@ -362,11 +362,46 @@ export const ArtifactsModal: React.FC<ArtifactsModalProps> = ({
                 <div className="space-y-2 text-xs">
                   <div className="bg-[#111] p-3 rounded-xl border border-[#222] flex items-center justify-between gap-3">
                     <div>
-                      <span className="text-[#888] text-[10px] uppercase block">Callback URL (Deploy on Vercel)</span>
-                      <span className="font-mono text-white text-[12px]">https://&lt;your-vercel-domain&gt;/api/messenger/webhook</span>
+                      <span className="text-[#888] text-[10px] uppercase block">Official Facebook Page</span>
+                      <a href="https://facebook.com/ExbitBot" target="_blank" rel="noreferrer" className="font-mono text-cyan-400 hover:underline text-[12px]">https://facebook.com/ExbitBot</a>
                     </div>
                     <button
-                      onClick={() => copyToClipboard('https://afterbell.vercel.app/api/messenger/webhook', 'url')}
+                      onClick={() => copyToClipboard('https://facebook.com/ExbitBot', 'fb_page')}
+                      className="px-2.5 py-1 rounded-lg bg-[#222] hover:bg-[#333] text-[11px] text-white"
+                    >
+                      {copiedKey === 'fb_page' ? 'Copied' : 'Copy'}
+                    </button>
+                  </div>
+
+                  <div className="bg-[#111] p-3 rounded-xl border border-[#222] flex items-center justify-between gap-3">
+                    <div>
+                      <span className="text-[#888] text-[10px] uppercase block">Direct Messenger Chat URL</span>
+                      <a href="https://m.me/ExbitBot" target="_blank" rel="noreferrer" className="font-mono text-[#0084ff] hover:underline text-[12px]">https://m.me/ExbitBot</a>
+                    </div>
+                    <button
+                      onClick={() => copyToClipboard('https://m.me/ExbitBot', 'mme_url')}
+                      className="px-2.5 py-1 rounded-lg bg-[#222] hover:bg-[#333] text-[11px] text-white"
+                    >
+                      {copiedKey === 'mme_url' ? 'Copied' : 'Copy'}
+                    </button>
+                  </div>
+
+                  <div className="bg-[#111] p-3 rounded-xl border border-[#222] flex items-center justify-between gap-3">
+                    <div>
+                      <span className="text-[#888] text-[10px] uppercase block">Callback URL (Deploy on Vercel)</span>
+                      <span className="font-mono text-white text-[12px]">
+                        {typeof window !== 'undefined' ? `${window.location.origin}/api/messenger/webhook` : 'https://<your-domain>/api/messenger/webhook'}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() =>
+                        copyToClipboard(
+                          typeof window !== 'undefined'
+                            ? `${window.location.origin}/api/messenger/webhook`
+                            : 'https://exbit-ai.vercel.app/api/messenger/webhook',
+                          'url'
+                        )
+                      }
                       className="px-2.5 py-1 rounded-lg bg-[#222] hover:bg-[#333] text-[11px] text-white"
                     >
                       {copiedKey === 'url' ? 'Copied' : 'Copy'}
@@ -376,10 +411,10 @@ export const ArtifactsModal: React.FC<ArtifactsModalProps> = ({
                   <div className="bg-[#111] p-3 rounded-xl border border-[#222] flex items-center justify-between gap-3">
                     <div>
                       <span className="text-[#888] text-[10px] uppercase block">Verify Token (hub.verify_token)</span>
-                      <span className="font-mono text-white text-[12px]">afterbell_messenger_verify_token</span>
+                      <span className="font-mono text-white text-[12px]">exbit_messenger_verify_token</span>
                     </div>
                     <button
-                      onClick={() => copyToClipboard('afterbell_messenger_verify_token', 'token')}
+                      onClick={() => copyToClipboard('exbit_messenger_verify_token', 'token')}
                       className="px-2.5 py-1 rounded-lg bg-[#222] hover:bg-[#333] text-[11px] text-white"
                     >
                       {copiedKey === 'token' ? 'Copied' : 'Copy'}
@@ -410,7 +445,7 @@ export const ArtifactsModal: React.FC<ArtifactsModalProps> = ({
                 </ol>
 
                 <p className="text-[11px] text-[#888] pt-1">
-                  Once subscribed, message your Facebook Page from your personal account or visit <code className="text-cyan-300 font-mono">m.me/&lt;your-page-id&gt;</code>. Afterbell will instantly reply with active condition alerts and accept "YES" trade approvals!
+                  Once subscribed, message your Facebook Page from your personal account at <a href="https://facebook.com/ExbitBot" target="_blank" rel="noreferrer" className="text-cyan-300 font-mono underline">facebook.com/ExbitBot</a> or directly open <a href="https://m.me/ExbitBot" target="_blank" rel="noreferrer" className="text-blue-400 font-mono underline">m.me/ExbitBot</a>. Exbit will instantly reply with active condition alerts and accept "YES" trade approvals!
                 </p>
               </div>
             </div>
@@ -439,7 +474,7 @@ export const ArtifactsModal: React.FC<ArtifactsModalProps> = ({
                 {
                   id: 'thesis',
                   title: 'Part 1: Thesis & Sub-Theme (After-Hours Information Pricing)',
-                  text: `Afterbell is an event-driven AI trading assistant reachable over Facebook Messenger where users set the conditions they care about (congressional trades, specific X accounts, IPO filings). It watches for market-moving events while US equities are closed (weekends, overnight, after-hours) and proposes trades in tokenized US stocks (rToken) on Bitget before native markets reopen.\n\nNative US equities sleep on weekends (~65.5 hour gap); rToken doesn't. Afterbell monitors that exact temporal gap, reasoning through after-hours information pricing with Claude/Gemini and executing on Bitget Agent Hub in --paper-trading mode strictly with human approval.`,
+                  text: `Exbit is an event-driven AI trading assistant reachable over Facebook Messenger where users set the conditions they care about (congressional trades, specific X accounts, IPO filings). It watches for market-moving events while US equities are closed (weekends, overnight, after-hours) and proposes trades in tokenized US stocks (rToken) on Bitget before native markets reopen.\n\nNative US equities sleep on weekends (~65.5 hour gap); rToken doesn't. Exbit monitors that exact temporal gap, reasoning through after-hours information pricing with Claude/Gemini and executing on Bitget Agent Hub in --paper-trading mode strictly with human approval.`,
                 },
                 {
                   id: 'metrics',
@@ -449,7 +484,7 @@ export const ArtifactsModal: React.FC<ArtifactsModalProps> = ({
                 {
                   id: 'x_post',
                   title: 'Required Compliant X Promo Post (#BitgetHackathon + @Bitget_AI)',
-                  text: `Excited to introduce Afterbell for the #BitgetHackathon S2 (Track: Agentic Trading) with @Bitget_AI! 🔔⚡\n\nUS equities sleep 65+ hours on weekends. Global news doesn't.\nAfterbell is a Facebook Messenger trading agent where you choose conditions to watch (congressional trades, X accounts, IPOs). It runs 24/7 and proposes trades in tokenized US stocks (rTokens) on Bitget before Wall Street reopens.\n\n• 24/7 Bitget rToken paper trading via Agent Hub MCP\n• Human-in-the-loop Messenger execution\n• Sharpe 2.38 paper portfolio & explainability trail\n\n#BitgetHackathon @Bitget_AI #AI #AgenticTrading`,
+                  text: `Excited to introduce Exbit for the #BitgetHackathon S2 (Track: Agentic Trading) with @Bitget_AI! 🔔⚡\n\nUS equities sleep 65+ hours on weekends. Global news doesn't.\nExbit is a Facebook Messenger trading agent where you choose conditions to watch (congressional trades, X accounts, IPOs). It runs 24/7 and proposes trades in tokenized US stocks (rTokens) on Bitget before Wall Street reopens.\n\n• 24/7 Bitget rToken paper trading via Agent Hub MCP\n• Human-in-the-loop Messenger execution (https://m.me/ExbitBot)\n• Sharpe 2.38 paper portfolio & explainability trail\n\n#BitgetHackathon @Bitget_AI #AI #AgenticTrading`,
                 },
               ].map((item) => (
                 <div key={item.id} className="bg-[#181818] p-4 rounded-2xl border border-[#262626] space-y-2">

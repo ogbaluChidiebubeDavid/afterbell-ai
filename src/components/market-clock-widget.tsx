@@ -54,7 +54,7 @@ export const MarketClockWidget: React.FC<MarketClockWidgetProps> = ({ marketStat
 
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
             {marketState?.edgeExplanation || 
-              'US stock exchanges are locked until Monday 9:30 AM EST. Catalysts breaking over the weekend create massive information mispricings. Afterbell monitors breaking news and executes on Bitget rTokens 24/7 ahead of the opening bell gap.'}
+              'US stock exchanges are locked until Monday 9:30 AM EST. Catalysts breaking over the weekend create massive information mispricings. Exbit monitors breaking news and executes on Bitget rTokens 24/7 ahead of the opening bell gap.'}
           </p>
 
           {/* Progress Bar of the Closed Gap */}
@@ -113,7 +113,7 @@ export const MarketClockWidget: React.FC<MarketClockWidgetProps> = ({ marketStat
               </span>
             </div>
             <div className="flex items-center justify-between text-slate-300">
-              <span>Afterbell Agent State:</span>
+              <span>Exbit Agent State:</span>
               <span className="text-cyan-400 font-semibold flex items-center gap-1">
                 <Sparkles className="w-3 h-3" /> Active Hunting
               </span>

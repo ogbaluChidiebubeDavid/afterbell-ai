@@ -1,9 +1,11 @@
-# 🔔 Afterbell — Agentic Trading Assistant
+# 🔔 Exbit — Agentic Trading Assistant
 
 > **Bitget AI Base Camp Hackathon S2**  
 > **Track:** 🟩 **Agentic Trading**  
 > **Sub-Theme:** **Event-Driven Agent / After-Hours Information Pricing**  
-> **Execution Mode:** `--paper-trading` (Bitget Agentic Account Isolated)
+> **Execution Mode:** `--paper-trading` (Bitget Agentic Account Isolated)  
+> **Facebook Page:** [facebook.com/ExbitBot](https://facebook.com/ExbitBot)  
+> **Messenger Chat:** [m.me/ExbitBot](https://m.me/ExbitBot)  
 
 ---
 
@@ -21,7 +23,7 @@ When US cash equity markets reopen Monday morning, they gap violently—inflicti
 
 **Bitget rTokens (tokenized US stocks issued by Reality Protocol, e.g. rNVDA, rTSLA, rAAPL, rMSFT, rCOIN, rMSTR) trade 24/7 with USDT collateral.**
 
-**Afterbell** exists specifically to exploit that temporal gap. It watches breaking news and user-selected conditions during after-hours and weekend windows, uses an LLM to reason through information pricing differentials, applies strict risk rules, sends an explainable proposal over **Facebook Messenger**, and executes paper orders on **Bitget Agent Hub** *only* upon explicit human affirmative reply (`"YES"`).
+**Exbit** exists specifically to exploit that temporal gap. It watches breaking news and user-selected conditions during after-hours and weekend windows, uses an LLM to reason through information pricing differentials, applies strict risk rules, sends an explainable proposal over **Facebook Messenger**, and executes paper orders on **Bitget Agent Hub** *only* upon explicit human affirmative reply (`"YES"`).
 
 ---
 
@@ -38,8 +40,7 @@ When US cash equity markets reopen Monday morning, they gap violently—inflicti
    ┌─────────────────────────────────────────────────────────────────┐
    │ 1. PERCEPTION LAYER: User-Configured Strategy Conditions        │
    │    • 🏛️ Congressional Trades: STOCK Act disclosures (Pelosi, etc)│
-   │    • 𝕏 Specific X Accounts: Executive & analyst commentary via   │
-   │      Monid (monid.ai) pay-per-use data layer                    │
+   │    • 𝕏 Specific X Accounts: Executive & analyst commentary feeds│
    │    • 📑 New IPO Filings: Weekend SEC EDGAR S-1 / 8-K filings     │
    │    • ⚡ After-Hours rTokens: Bitget 24/7 tokenized US stocks      │
    │    • Context via Bitget skills (macro-analyst, news-briefing)   │
@@ -72,6 +73,8 @@ When US cash equity markets reopen Monday morning, they gap violently—inflicti
    ┌─────────────────────────────────────────────────────────────────┐
    │ 4. INTERFACE LAYER (Facebook Messenger + Human Approval Gate)   │
    │    • Facebook Messenger Platform API (Meta for Developers)       │
+   │    • Official Page: https://facebook.com/ExbitBot               │
+   │    • Direct Chat: https://m.me/ExbitBot                          │
    │    • Dispatches rich text alert with dryRun preview              │
    │    • STRICT HUMAN-IN-THE-LOOP GATE:                              │
    │      - Requires affirmative reply ("YES" / "APPROVE")            │
@@ -135,11 +138,11 @@ A **Bitget Agentic Account** is an isolated sub-account built specifically for A
 
 ---
 
-## 🌐 Perception Layer & Monid Integration
+## 🌐 Perception Layer & Signal Tracking
 
-Afterbell allows users to customize what gets monitored rather than forcing a rigid watchlist:
+Exbit allows users to customize what gets monitored rather than forcing a rigid watchlist:
 - **Congressional Trades:** Tracks STOCK Act disclosures (Pelosi, etc.).
-- **Specific X Accounts:** Follows key market accounts using **Monid** (`https://monid.ai`), a pay-per-use data access layer that retrieves structured social feeds without paid platform subscriptions.
+- **Specific X Accounts:** Follows key market accounts for breaking regulatory, earnings, and technology news.
 - **New IPO Filings:** Monitors SEC EDGAR S-1 / 8-K filings for new listings.
 - **Bitget Signal Skills:** Enhances raw signals with `macro-analyst`, `news-briefing`, `sentiment-analyst`, `market-intel`, and `technical-analysis`.
 
@@ -175,7 +178,7 @@ Afterbell allows users to customize what gets monitored rather than forcing a ri
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/your-username/afterbell-ai.git
+git clone https://github.com/ogbaluChidiebubeDavid/afterbell-ai.git
 cd afterbell-ai
 npm install
 ```
@@ -187,28 +190,27 @@ cp .env.example .env.local
 ```
 
 ### 3. Connect Real Messaging via Facebook Messenger (Meta Graph API)
-Afterbell natively integrates with Facebook Messenger using official Meta Graph APIs:
+Exbit natively integrates with Facebook Messenger using official Meta Graph APIs:
 
-1. **Create a Free Meta Developer App**:
-   - Go to [developers.facebook.com](https://developers.facebook.com) and create an App (type: Other / Business).
-   - Add the **Messenger** product to your app.
+1. **Official Page & Messenger Chatbox**:
+   - **Facebook Page**: [https://facebook.com/ExbitBot](https://facebook.com/ExbitBot)
+   - **Direct Chat Link**: [https://m.me/ExbitBot](https://m.me/ExbitBot)
 2. **Connect a Facebook Page & Generate Token**:
-   - In Messenger Settings, connect any Facebook Page (or create a test page).
+   - In Meta Developers Messenger Settings, link your page (`https://facebook.com/ExbitBot`).
    - Click **Generate Token** for your page and copy it into `.env.local`:
      ```env
      MESSENGER_PAGE_TOKEN=EAAG...your_token_here
-     MESSENGER_VERIFY_TOKEN=afterbell_messenger_verify_token
+     MESSENGER_VERIFY_TOKEN=exbit_messenger_verify_token
      ```
 3. **Configure Webhook**:
-   - Expose your local server (e.g. `npx ngrok http 3000`).
-   - In the Meta Messenger Webhooks section, click **Add Callback URL**:
-     - **Callback URL**: `https://<your-ngrok-domain>/api/messenger/webhook`
-     - **Verify Token**: `afterbell_messenger_verify_token`
+   - In Meta Messenger Webhooks, enter your Callback URL:
+     - **Callback URL**: `https://<your-vercel-domain>/api/messenger/webhook`
+     - **Verify Token**: `exbit_messenger_verify_token`
    - Subscribe your Page to `messages` and `messaging_postbacks`.
 4. **Interact in Real-Time**:
-   - Send a message to your Page on Facebook Messenger or via `m.me/<your-page-id>`.
-   - Afterbell will instantly reply with active conditions, status, and trade proposals!
-   - You can reply `"YES"` to approve paper trades on Bitget Agent Hub or `"MENU"` to toggle strategies!
+   - Message **@ExbitBot** on Facebook Messenger or visit `https://m.me/ExbitBot`.
+   - Exbit will instantly reply with active conditions, status, and trade proposals!
+   - Reply `"YES"` to approve paper trades on Bitget Agent Hub or `"MENU"` to toggle strategies!
 
 ### 4. Start Development Server
 ```bash
@@ -220,26 +222,27 @@ Open `http://localhost:3000` in your browser.
 
 ## 🧪 Testing the End-to-End Demo (Step-by-Step for Judges)
 
-1. **Observe Market Clock**: Check the top dashboard banner showing the US Equities Closed Weekend / Overnight Gap countdown and Bitget rToken 24/7 status.
-2. **Select Conditions**: Use the **Watch Strategy Conditions** panel to toggle Congressional Trades, Specific X Accounts, or IPO Filings.
-3. **Inject Event**: Click **"Simulate Catalyst"** or use the perception feed dropdown (e.g. *"Sunday Blackwell Chip Policy"* on `rNVDA`).
-4. **Inspect Explainability**: Review the structured trade proposal card showing the core catalyst thesis, after-hours information pricing gap, confidence score (89%), and passed dryRun preview.
-5. **Test Messenger Flow**: In the on-screen Mobile Simulator widget:
-   - Notice the formatted trade alert received from Afterbell.
+1. **Launch Messenger**: Click **"Connect Messenger"** or **"Launch on Facebook Messenger"** to immediately open [m.me/ExbitBot](https://m.me/ExbitBot).
+2. **Observe Market Clock**: Check the top dashboard banner showing the US Equities Closed Weekend / Overnight Gap countdown and Bitget rToken 24/7 status.
+3. **Select Conditions**: Use the **Watch Strategy Conditions** panel to toggle Congressional Trades, Specific X Accounts, or IPO Filings.
+4. **Inject Event**: Click **"Simulate Catalyst"** or use the perception feed dropdown (e.g. *"Sunday Blackwell Chip Policy"* on `rNVDA`).
+5. **Inspect Explainability**: Review the structured trade proposal card showing the core catalyst thesis, after-hours information pricing gap, confidence score (89%), and passed dryRun preview.
+6. **Test Messenger Flow**: In the on-screen Mobile Simulator widget:
+   - Notice the formatted trade alert received from Exbit.
    - Click the quick action **`Reply "YES"`** or type `"YES"` in the input.
-6. **Verify Paper Execution**:
+7. **Verify Paper Execution**:
    - The paper order executes on Bitget Agent Hub.
    - The fill receipt and order ID appear in the chat and on the proposal card.
    - The paper portfolio updates with open position, Sharpe ratio, and equity curve.
-7. **Inspect Audit Log**: Click the **"Audit Log"** tab to review all approved, rejected, and pending proposals. Click **"Export CSV"** or **"Export JSON"** to download the audit trail.
-8. **View Submission Pack**: Click the **"Submission Pack"** tab to view the ready-to-copy 6-part Google Form submission fields and compliant X post template.
+8. **Inspect Audit Log**: Click the **"Audit Log"** tab to review all approved, rejected, and pending proposals. Click **"Export CSV"** or **"Export JSON"** to download the audit trail.
+9. **View Submission Pack**: Click the **"Submission Pack"** tab to view the ready-to-copy 6-part Google Form submission fields and compliant X post template.
 
 ---
 
 ## 📁 Repository Structure
 
 ```
-AfterBell AI/
+exbit-ai/
 ├── src/
 │   ├── app/
 │   │   ├── api/
@@ -254,9 +257,9 @@ AfterBell AI/
 │   │   │   └── export/route.ts          # Downloadable CSV/JSON audit logs
 │   │   ├── layout.tsx                   # Theme & safety disclaimer banner
 │   │   ├── page.tsx                     # Main command center dashboard
-│   │   └── globals.css                  # Custom tokens & glassmorphism
+│   │   └── globals.css                  # Custom tokens & typography
 │   ├── components/
-│   │   ├── header.tsx                   # Top navigation & market pill
+│   │   ├── header.tsx                   # Top navigation & brand pill
 │   │   ├── disclaimer-banner.tsx        # Safety compliance notice
 │   │   ├── watchlist-ticker.tsx         # 24/7 rToken price ticker
 │   │   ├── market-clock-widget.tsx      # Temporal gap counter & progress
@@ -264,7 +267,7 @@ AfterBell AI/
 │   │   ├── strategy-selector.tsx        # User condition configuration panel
 │   │   ├── perception-feed.tsx          # Signal feed & catalyst injector
 │   │   ├── proposal-card.tsx            # Explainability & approval gate
-│   │   ├── iphone-frame.tsx             # Interactive mobile Messenger simulator
+│   │   ├── messenger-frame.tsx          # Interactive mobile Messenger simulator
 │   │   ├── portfolio-view.tsx           # Positions, equity curve, history
 │   │   ├── audit-log-table.tsx          # Filterable audit trail & export
 │   │   ├── submission-pack.tsx          # 6-part Google Form text & X post

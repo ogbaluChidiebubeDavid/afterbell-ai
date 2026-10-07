@@ -6,7 +6,7 @@ import { StrategyModuleService } from './strategy-modules';
 
 export interface ChatMessage {
   id: string;
-  sender: 'AFTERBELL_AGENT' | 'USER';
+  sender: 'EXBIT_AGENT' | 'USER';
   timestamp: string;
   text: string;
   proposalId?: string;
@@ -28,17 +28,17 @@ export class MessagingChannelService {
   private static chatHistory: ChatMessage[] = [
     {
       id: "msg-welcome-01",
-      sender: "AFTERBELL_AGENT",
+      sender: "EXBIT_AGENT",
       timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-      text: "🔔 Afterbell Agent connected via Facebook Messenger. Watching US Equities After-Hours & Weekend Gap for Bitget rToken trading.\n\nType STATUS anytime, or MENU to choose what conditions to watch around the clock.",
+      text: "🔔 Exbit Agent connected via Facebook Messenger. Watching US Equities After-Hours & Weekend Gap for Bitget rToken trading.\n\nType STATUS anytime, or MENU to choose what conditions to watch around the clock.",
     },
     {
       id: "msg-alert-nvda",
-      sender: "AFTERBELL_AGENT",
+      sender: "EXBIT_AGENT",
       timestamp: new Date(Date.now() - 1000 * 60 * 18).toISOString(),
       proposalId: "prop-nvda-demo",
       isActionable: true,
-      text: `🚨 AFTERBELL ALERT [Weekend Gap]
+      text: `🚨 EXBIT ALERT [Weekend Gap]
 Target: rNVDA (NVIDIA Corp Tokenized)
 Direction: LONG @ $128.45
 Size: $440.00 USDT (~3.42 rNVDA)
@@ -88,7 +88,7 @@ Reply "YES" to approve paper order, or "NO" to discard.`,
    * Formats trade proposal alert with explainable thesis and dryRun preview
    */
   static formatAlertText(proposal: TradeProposal): string {
-    return `🚨 AFTERBELL ALERT [${proposal.underlying}]
+    return `🚨 EXBIT ALERT [${proposal.underlying}]
 Target: ${proposal.asset}
 Direction: ${proposal.direction} @ $${proposal.entryPrice.toFixed(2)}
 Size: $${proposal.positionSizeUsdt.toFixed(2)} USDT (~${proposal.positionSizeTokens} ${proposal.asset})
@@ -205,7 +205,7 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
   ): ChatMessage {
     const entry: ChatMessage = {
       id: `msg-${Date.now().toString(36)}`,
-      sender: 'AFTERBELL_AGENT',
+      sender: 'EXBIT_AGENT',
       timestamp: new Date().toISOString(),
       text,
       proposalId,
@@ -257,7 +257,7 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
     if (upper === 'MENU' || upper === 'STRATEGIES' || upper === 'CONDITIONS') {
       const modules = StrategyModuleService.getModules();
       const replyText =
-        `📋 AFTERBELL STRATEGY CONDITIONS:\nSelect what you want watched around the clock:\n\n` +
+        `📋 EXBIT STRATEGY CONDITIONS:\nSelect what you want watched around the clock:\n\n` +
         modules.map((m, i) => `${i + 1}. [${m.isActive ? '✅ ON' : '⚪ OFF'}] ${m.name}`).join('\n') +
         `\n\nTap a number below (1-4) to toggle conditions, or "STATUS" for live portfolio stats.`;
 
@@ -293,7 +293,7 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
     if (upper.includes('STATUS') || upper.includes('PORTFOLIO')) {
       const port = PortfolioManagerService.getPortfolioState();
       const activeMods = StrategyModuleService.getActiveModules();
-      const replyText = `📊 AFTERBELL STATUS REPORT:\nMode: --paper-trading (Bitget Agentic Account)\nPortfolio Value: $${port.metrics.currentPortfolioValueUsdt.toFixed(2)} USDT\nRealized P&L: +$${port.metrics.realizedPnlTotalUsdt.toFixed(2)} USDT\nSharpe Ratio: ${port.metrics.sharpeRatio}\nWin Rate: ${port.metrics.winRatePercent}%\nActive Watch Conditions: ${activeMods.map((m) => m.name).join(', ')}`;
+      const replyText = `📊 EXBIT STATUS REPORT:\nMode: --paper-trading (Bitget Agentic Account)\nPortfolio Value: $${port.metrics.currentPortfolioValueUsdt.toFixed(2)} USDT\nRealized P&L: +$${port.metrics.realizedPnlTotalUsdt.toFixed(2)} USDT\nSharpe Ratio: ${port.metrics.sharpeRatio}\nWin Rate: ${port.metrics.winRatePercent}%\nActive Watch Conditions: ${activeMods.map((m) => m.name).join(', ')}`;
 
       this.addAgentMessage(replyText, undefined, false, true, [
         { title: 'Strategy Menu', payload: 'MENU' },
@@ -327,7 +327,7 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
         side: pendingProposal.direction === 'LONG' ? 'buy' : 'sell',
         orderType: 'market',
         size: pendingProposal.positionSizeTokens.toString(),
-        clientOid: `afterbell_msg_${pendingProposal.id}`,
+        clientOid: `exbit_msg_${pendingProposal.id}`,
         dryRun: false,
       });
 
@@ -372,7 +372,7 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
     }
 
     // Default conversational reply
-    const replyText = `🤖 Afterbell Agent: Received "${messageText}".\nWatching your chosen conditions 24/7.\n• Reply "YES" to approve any pending trade\n• Reply "NO" to reject\n• Tap "MENU" to toggle watched conditions\n• Tap "STATUS" for portfolio stats.`;
+    const replyText = `🤖 Exbit Agent: Received "${messageText}".\nWatching your chosen conditions 24/7.\n• Reply "YES" to approve any pending trade\n• Reply "NO" to reject\n• Tap "MENU" to toggle watched conditions\n• Tap "STATUS" for portfolio stats.`;
 
     this.addAgentMessage(replyText, undefined, false, true, [
       { title: 'Approve Trade', payload: 'YES' },

@@ -14,11 +14,11 @@ export const SubmissionPack: React.FC = () => {
     {
       key: 'thesis',
       title: 'Part 1: Thesis & Sub-Theme (After-Hours Information Pricing)',
-      content: `Afterbell is an event-driven AI trading assistant reachable over Facebook Messenger that bridges a structural market inefficiency: US cash equities sleep for ~65.5 consecutive hours every weekend and 13.5 hours overnight, while macroeconomic news, geopolitical developments, tech breakthroughs, and regulatory rulings occur 24/7.
+      content: `Exbit is an event-driven AI trading assistant reachable over Facebook Messenger that bridges a structural market inefficiency: US cash equities sleep for ~65.5 consecutive hours every weekend and 13.5 hours overnight, while macroeconomic news, geopolitical developments, tech breakthroughs, and regulatory rulings occur 24/7.
 
 Traditional equity investors are trapped until the Monday 9:30 AM EST regular session bell, where violent opening price gaps inflict slippage and missed opportunities. However, Bitget rTokens (tokenized US stocks issued by Reality Protocol, e.g. rNVDA, rTSLA, rAAPL, rMSFT, rCOIN, rMSTR) trade 24/7 with USDT collateral.
 
-Afterbell continuously monitors this temporal gap using Bitget's native signal research skills and user-defined conditions, uses an LLM reasoning engine to model the information pricing impact, applies strict non-negotiable risk guardrails, messages the trader an explainable proposal over Facebook Messenger, and executes paper orders on Bitget Agent Hub only upon explicit human approval ("YES").`,
+Exbit continuously monitors this temporal gap using Bitget's native signal research skills and user-defined conditions, uses an LLM reasoning engine to model the information pricing impact, applies strict non-negotiable risk guardrails, messages the trader an explainable proposal over Facebook Messenger, and executes paper orders on Bitget Agent Hub only upon explicit human approval ("YES").`,
     },
     {
       key: 'target_user',
@@ -57,8 +57,8 @@ Afterbell continuously monitors this temporal gap using Bitget's native signal r
     },
     {
       key: 'llm_reflections',
-      title: 'Part 6: Role of the LLM in Afterbell & Reflections',
-      content: `In Afterbell, the LLM is treated not as a conversational chatbot, but as an autonomous reasoning agent with strict boundaries:
+      title: 'Part 6: Role of the LLM in Exbit & Reflections',
+      content: `In Exbit, the LLM is treated not as a conversational chatbot, but as an autonomous reasoning agent with strict boundaries:
 1. Perception Synthesis: Ingests unstructured breaking signals from user-selected strategies and Bitget research skills, filtering noise.
 2. Information Pricing Valuation: Estimates the price transmission differential between closed native equity markets and 24/7 rTokens.
 3. Decision Explainability: Outputs structured, auditable rationales explaining *why* a trade makes sense before sending the alert.
@@ -67,10 +67,10 @@ Afterbell continuously monitors this temporal gap using Bitget's native signal r
     {
       key: 'x_post',
       title: 'Compliant X Promo Post Template (#BitgetHackathon + @Bitget_AI)',
-      content: `Excited to unveil Afterbell for the #BitgetHackathon S2 (Track: Agentic Trading) with @Bitget_AI! 🔔⚡
+      content: `Excited to unveil Exbit for the #BitgetHackathon S2 (Track: Agentic Trading) with @Bitget_AI! 🔔⚡
 
 US equities sleep 65+ hours every weekend. Global news doesn't.
-Afterbell is an AI trading assistant reachable via Facebook Messenger that watches after-hours market-moving events and proposes trades in 24/7 tokenized US stocks (rTokens) on Bitget before Monday's opening bell.
+Exbit is an AI trading assistant reachable via Facebook Messenger that watches after-hours market-moving events and proposes trades in 24/7 tokenized US stocks (rTokens) on Bitget before Monday's opening bell.
 
 • 24/7 Bitget rToken execution via Agent Hub MCP (--paper-trading)
 • Strict human-in-the-loop approval via Facebook Messenger

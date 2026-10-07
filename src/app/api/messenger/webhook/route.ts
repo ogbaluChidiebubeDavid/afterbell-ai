@@ -12,12 +12,14 @@ export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get('hub.verify_token');
   const challenge = req.nextUrl.searchParams.get('hub.challenge');
 
-  const verifyToken =
-    process.env.MESSENGER_VERIFY_TOKEN ||
-    process.env.MESSENGER_TOKEN ||
-    'afterbell_messenger_verify_token';
+  const configuredToken = process.env.MESSENGER_VERIFY_TOKEN || process.env.MESSENGER_TOKEN;
+  const isTokenMatch =
+    token &&
+    (token === configuredToken ||
+      token === 'exbit_messenger_verify_token' ||
+      token === 'afterbell_messenger_verify_token');
 
-  if (mode === 'subscribe' && token === verifyToken) {
+  if (mode === 'subscribe' && isTokenMatch) {
     console.log('[Messenger Webhook] Verified successfully with Meta!');
     return new Response(challenge, {
       status: 200,
@@ -28,7 +30,9 @@ export async function GET(req: NextRequest) {
   // Health check endpoint
   return NextResponse.json({
     status: 'ACTIVE',
-    service: 'Afterbell Facebook Messenger Webhook',
+    service: 'Exbit Facebook Messenger Webhook',
+    facebookPageUrl: 'https://facebook.com/ExbitBot',
+    messengerChatUrl: 'https://m.me/ExbitBot',
     configured: MessagingChannelService.isConfigured(),
     activeRecipient: MessagingChannelService.getActiveRecipient(),
     timestamp: new Date().toISOString(),

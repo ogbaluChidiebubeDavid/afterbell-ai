@@ -3,8 +3,8 @@ export interface BitgetAgentHubConfig {
   accountId: string;
   serverUrl?: string;
   isIsolated: boolean;
-  canWithdraw: false; // STRICT: always false for Afterbell
-  canCancelAll: false; // STRICT: always false for Afterbell
+  canWithdraw: false; // STRICT: always false for Exbit
+  canCancelAll: false; // STRICT: always false for Exbit
 }
 
 export interface BitgetOrderRequest {

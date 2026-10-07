@@ -65,6 +65,12 @@ export async function POST(req: NextRequest) {
           const senderId = event.sender?.id;
           if (!senderId) continue;
 
+          // Ignore echo messages sent by the page itself
+          if (event.message?.is_echo) {
+            console.log('[Messenger Webhook] Ignoring echo message from Page itself.');
+            continue;
+          }
+
           const messageText = (
             event.message?.quick_reply?.payload ||
             event.message?.text ||
@@ -74,7 +80,9 @@ export async function POST(req: NextRequest) {
 
           if (!messageText) continue;
 
-          await MessagingChannelService.processUserMessage(messageText, senderId);
+          console.log(`[Messenger Webhook] Inbound message from ${senderId}: "${messageText}"`);
+          const result = await MessagingChannelService.processUserMessage(messageText, senderId);
+          console.log(`[Messenger Webhook] Processed message for ${senderId}, action: ${result.action}`);
         }
       }
 

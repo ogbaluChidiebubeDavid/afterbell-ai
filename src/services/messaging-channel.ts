@@ -194,15 +194,16 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
   }
 
   /**
-   * Adds an agent message to session history and optionally dispatches to Facebook Messenger
+   * Adds an agent message to session history and dispatches to Facebook Messenger
    */
-  static addAgentMessage(
+  static async addAgentMessage(
     text: string,
     proposalId?: string,
     isActionable?: boolean,
     dispatchReal: boolean = true,
-    quickReplies?: Array<{ title: string; payload: string }>
-  ): ChatMessage {
+    quickReplies?: Array<{ title: string; payload: string }>,
+    recipientId?: string
+  ): Promise<ChatMessage> {
     const entry: ChatMessage = {
       id: `msg-${Date.now().toString(36)}`,
       sender: 'EXBIT_AGENT',
@@ -214,9 +215,13 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
     this.chatHistory.push(entry);
 
     if (dispatchReal) {
-      this.notifyUser(text, undefined, quickReplies).catch((err) => {
-        console.warn('[MessagingChannel] Dispatch notice:', err.message);
-      });
+      const target = recipientId || this.getActiveRecipient();
+      if (target) {
+        console.log(`[MessagingChannel] addAgentMessage delivering to recipient: ${target}`);
+        await this.notifyUser(text, target, quickReplies);
+      } else {
+        console.log('[MessagingChannel] No recipient ID provided; running in local simulator mode.');
+      }
     }
 
     return entry;
@@ -269,7 +274,7 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
         { title: 'Portfolio Status', payload: 'STATUS' },
       ];
 
-      this.addAgentMessage(replyText, undefined, false, true, quickReplies);
+      await this.addAgentMessage(replyText, undefined, false, true, quickReplies, senderId);
       return { action: 'MENU', replyText };
     }
 
@@ -281,10 +286,10 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
         const updated = StrategyModuleService.toggleModule(modules[idx].id);
         const replyText = `⚙️ Condition Updated: ${updated?.name} is now ${updated?.isActive ? 'ACTIVATED ✅' : 'DISABLED ⚪'}.\nWatching ${updated?.targets.join(', ')}.`;
 
-        this.addAgentMessage(replyText, undefined, false, true, [
+        await this.addAgentMessage(replyText, undefined, false, true, [
           { title: 'View Menu', payload: 'MENU' },
           { title: 'Portfolio Status', payload: 'STATUS' },
-        ]);
+        ], senderId);
         return { action: 'TOGGLE_STRATEGY', replyText, extra: { module: updated } };
       }
     }
@@ -295,9 +300,9 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
       const activeMods = StrategyModuleService.getActiveModules();
       const replyText = `📊 EXBIT STATUS REPORT:\nMode: --paper-trading (Bitget Agentic Account)\nPortfolio Value: $${port.metrics.currentPortfolioValueUsdt.toFixed(2)} USDT\nRealized P&L: +$${port.metrics.realizedPnlTotalUsdt.toFixed(2)} USDT\nSharpe Ratio: ${port.metrics.sharpeRatio}\nWin Rate: ${port.metrics.winRatePercent}%\nActive Watch Conditions: ${activeMods.map((m) => m.name).join(', ')}`;
 
-      this.addAgentMessage(replyText, undefined, false, true, [
+      await this.addAgentMessage(replyText, undefined, false, true, [
         { title: 'Strategy Menu', payload: 'MENU' },
-      ]);
+      ], senderId);
       return { action: 'STATUS_REPORT', replyText };
     }
 
@@ -308,16 +313,16 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
     if (isAffirmative) {
       if (!pendingProposal) {
         const replyText = '⚠️ No trade proposal is currently awaiting approval. Type STATUS or MENU to see active conditions.';
-        this.addAgentMessage(replyText, undefined, false, true, [
+        await this.addAgentMessage(replyText, undefined, false, true, [
           { title: 'View Menu', payload: 'MENU' },
           { title: 'Status', payload: 'STATUS' },
-        ]);
+        ], senderId);
         return { action: 'NO_PENDING_PROPOSAL', replyText };
       }
 
       if (pendingProposal.riskCheckStatus === 'REJECTED_BY_RISK_RULE') {
         const replyText = `🛑 Cannot execute: Proposal for ${pendingProposal.asset} failed automated risk controls (${pendingProposal.riskRejectionReason}).`;
-        this.addAgentMessage(replyText, pendingProposal.id, false, true);
+        await this.addAgentMessage(replyText, pendingProposal.id, false, true, undefined, senderId);
         return { action: 'RISK_BLOCKED', replyText };
       }
 
@@ -341,10 +346,10 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
 
       const replyText = `✅ ORDER FILLED [Bitget Agent Hub Paper Trading]\nAsset: ${pendingProposal.asset}\nDirection: ${pendingProposal.direction}\nFill: $${orderResponse.fillPrice.toFixed(2)} USDT\nSize: $${(orderResponse.fillPrice * orderResponse.fillQuantity).toFixed(2)}\nOrder ID: ${orderResponse.orderId}\nAccount: Bitget Agentic (Isolated)`;
 
-      this.addAgentMessage(replyText, pendingProposal.id, false, true, [
+      await this.addAgentMessage(replyText, pendingProposal.id, false, true, [
         { title: 'View Status', payload: 'STATUS' },
         { title: 'Strategy Menu', payload: 'MENU' },
-      ]);
+      ], senderId);
 
       return {
         action: 'APPROVED_AND_EXECUTED',
@@ -362,11 +367,11 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
 
         const replyText = `❌ Trade proposal for ${pendingProposal.asset} was cancelled upon your request. Logged to explainability trail.`;
 
-        this.addAgentMessage(replyText, pendingProposal.id, false, true);
+        await this.addAgentMessage(replyText, pendingProposal.id, false, true, undefined, senderId);
         return { action: 'REJECTED', replyText, extra: { proposalId: pendingProposal.id } };
       } else {
         const replyText = 'Acknowledged. No active proposal was pending.';
-        this.addAgentMessage(replyText, undefined, false, true);
+        await this.addAgentMessage(replyText, undefined, false, true, undefined, senderId);
         return { action: 'NO_OP', replyText };
       }
     }
@@ -374,11 +379,11 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
     // Default conversational reply
     const replyText = `🤖 Exbit Agent: Received "${messageText}".\nWatching your chosen conditions 24/7.\n• Reply "YES" to approve any pending trade\n• Reply "NO" to reject\n• Tap "MENU" to toggle watched conditions\n• Tap "STATUS" for portfolio stats.`;
 
-    this.addAgentMessage(replyText, undefined, false, true, [
+    await this.addAgentMessage(replyText, undefined, false, true, [
       { title: 'Approve Trade', payload: 'YES' },
       { title: 'Strategy Menu', payload: 'MENU' },
       { title: 'Portfolio Status', payload: 'STATUS' },
-    ]);
+    ], senderId);
 
     return { action: 'REPLIED', replyText };
   }

@@ -99,6 +99,28 @@ export class StrategyModuleService {
     return mod;
   }
 
+  static setModuleTargets(id: string, newTargets: string[]): StrategyModule | null {
+    const mod = this.modules.find(m => m.id === id);
+    if (!mod) return null;
+    mod.targets = newTargets;
+    mod.isActive = true;
+    return mod;
+  }
+
+  static addModuleTargets(id: string, additionalTargets: string[]): StrategyModule | null {
+    const mod = this.modules.find(m => m.id === id);
+    if (!mod) return null;
+    const existing = new Set(mod.targets.map(t => t.toLowerCase()));
+    for (const t of additionalTargets) {
+      if (!existing.has(t.toLowerCase())) {
+        mod.targets.push(t);
+        existing.add(t.toLowerCase());
+      }
+    }
+    mod.isActive = true;
+    return mod;
+  }
+
   static getActiveModules(): StrategyModule[] {
     return this.modules.filter(m => m.isActive);
   }

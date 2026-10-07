@@ -278,8 +278,40 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
       return { action: 'MENU', replyText };
     }
 
-    // Number toggles (1-4)
-    if (['1', '2', '3', '4'].includes(messageText)) {
+    // Option 2 (Specific X Accounts) toggle & customization prompt
+    if (messageText === '2') {
+      const modules = StrategyModuleService.getModules();
+      const xMod = modules[1];
+      const updated = StrategyModuleService.toggleModule(xMod.id);
+
+      if (updated?.isActive) {
+        const replyText =
+          `⚙️ Specific X Accounts is now ACTIVATED ✅!\n\n` +
+          `Currently watching: ${updated.targets.join(', ')}.\n\n` +
+          `👉 Send any X handles or links you want to monitor, for example:\n` +
+          `• "@sama @tim_cook"\n` +
+          `• "https://x.com/satyanadella"\n` +
+          `• Or tap a quick reply below:`;
+
+        await this.addAgentMessage(replyText, undefined, false, true, [
+          { title: 'Add @sama', payload: 'ADD @sama' },
+          { title: 'Add @tim_cook', payload: 'ADD @tim_cook' },
+          { title: 'View Menu', payload: 'MENU' },
+          { title: 'Portfolio Status', payload: 'STATUS' },
+        ], senderId);
+        return { action: 'TOGGLE_X_STRATEGY', replyText, extra: { module: updated } };
+      } else {
+        const replyText = `⚙️ Specific X Accounts is now DISABLED ⚪. (Inactive)`;
+        await this.addAgentMessage(replyText, undefined, false, true, [
+          { title: 'View Menu', payload: 'MENU' },
+          { title: 'Portfolio Status', payload: 'STATUS' },
+        ], senderId);
+        return { action: 'TOGGLE_X_STRATEGY', replyText, extra: { module: updated } };
+      }
+    }
+
+    // Generic Number toggles (1, 3, 4)
+    if (['1', '3', '4'].includes(messageText)) {
       const idx = parseInt(messageText, 10) - 1;
       const modules = StrategyModuleService.getModules();
       if (modules[idx]) {
@@ -292,6 +324,40 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
         ], senderId);
         return { action: 'TOGGLE_STRATEGY', replyText, extra: { module: updated } };
       }
+    }
+
+    // Custom X username / profile link ingestion (e.g. "@sama", "ADD @tim_cook", "https://x.com/satyanadella")
+    const handleRegex = /@([a-zA-Z0-9_]{1,25})/g;
+    const urlRegex = /(?:https?:\/\/)?(?:www\.)?(?:twitter\.com|x\.com)\/([a-zA-Z0-9_]{1,25})/gi;
+
+    const extractedHandles: string[] = [];
+    let hMatch;
+    while ((hMatch = handleRegex.exec(messageText)) !== null) {
+      const handle = `@${hMatch[1]}`;
+      if (!extractedHandles.includes(handle)) extractedHandles.push(handle);
+    }
+    let uMatch;
+    while ((uMatch = urlRegex.exec(messageText)) !== null) {
+      const handle = `@${uMatch[1]}`;
+      if (!extractedHandles.includes(handle)) extractedHandles.push(handle);
+    }
+
+    if (extractedHandles.length > 0) {
+      const updated = StrategyModuleService.addModuleTargets('mod_x_accounts', extractedHandles);
+      const replyText =
+        `🎯 Custom Monitoring Saved!\n` +
+        `Added: ${extractedHandles.join(', ')}\n\n` +
+        `Active Watchlist: ${updated?.targets.join(', ')}\n\n` +
+        `📡 What happens next:\n` +
+        `1. 24/7 Perception: Exbit streams breaking posts from these accounts around the clock.\n` +
+        `2. LLM Impact Reasoning: When an executive posts market-moving catalyst outside trading hours, Exbit estimates the price gap differential on Bitget rTokens.\n` +
+        `3. Alert & Human Approval: If confidence ≥ 75%, Exbit sends a trade proposal directly to you with a "YES" button to execute in paper mode!`;
+
+      await this.addAgentMessage(replyText, undefined, false, true, [
+        { title: 'Strategy Menu', payload: 'MENU' },
+        { title: 'Portfolio Status', payload: 'STATUS' },
+      ], senderId);
+      return { action: 'UPDATED_X_TARGETS', replyText, extra: { targets: updated?.targets } };
     }
 
     // STATUS command

@@ -1,5 +1,10 @@
 import { TradeProposal } from '../types/proposals';
 import { DryRunResult } from '../types/proposals';
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
+
+const CACHE_FILE = path.join(os.tmpdir(), 'exbit_proposals_store.json');
 
 export class AuditLoggerService {
   private static proposals: TradeProposal[] = [
@@ -26,7 +31,9 @@ export class AuditLoggerService {
       },
       riskFlags: ["Weekend low-liquidity slippage watch", "Requires explicit human confirmation"],
       riskCheckStatus: "PASSED",
-      humanApprovalStatus: "PENDING_APPROVAL",
+      humanApprovalStatus: "APPROVED",
+      approvalTimestamp: new Date(Date.now() - 1000 * 60 * 16).toISOString(),
+      orderExecutionId: "bg_paper_nvda_seed",
       dryRun: {
         passed: true,
         simulatedPrice: 128.45,
@@ -170,22 +177,58 @@ export class AuditLoggerService {
     },
   ];
 
+  private static syncFromCache(): void {
+    try {
+      if (fs.existsSync(CACHE_FILE)) {
+        const raw = fs.readFileSync(CACHE_FILE, 'utf-8');
+        const cached: TradeProposal[] = JSON.parse(raw);
+        if (Array.isArray(cached)) {
+          for (const item of cached) {
+            const idx = this.proposals.findIndex(p => p.id === item.id);
+            if (idx === -1) {
+              this.proposals.unshift(item);
+            } else {
+              this.proposals[idx] = item;
+            }
+          }
+        }
+      }
+    } catch (e) {
+      // Cache read error ignored in constrained environments
+    }
+  }
+
+  private static syncToCache(): void {
+    try {
+      fs.writeFileSync(CACHE_FILE, JSON.stringify(this.proposals, null, 2), 'utf-8');
+    } catch (e) {
+      // Cache write error ignored in constrained environments
+    }
+  }
+
   static getAllProposals(): TradeProposal[] {
+    this.syncFromCache();
     return [...this.proposals];
   }
 
   static getProposalById(id: string): TradeProposal | null {
+    this.syncFromCache();
     return this.proposals.find(p => p.id === id) || null;
   }
 
   static addProposal(proposal: TradeProposal): void {
+    this.syncFromCache();
+    this.proposals = this.proposals.filter(p => p.id !== proposal.id);
     this.proposals.unshift(proposal);
+    this.syncToCache();
   }
 
   static updateProposal(id: string, updates: Partial<TradeProposal>): TradeProposal | null {
+    this.syncFromCache();
     const idx = this.proposals.findIndex(p => p.id === id);
     if (idx === -1) return null;
     this.proposals[idx] = { ...this.proposals[idx], ...updates };
+    this.syncToCache();
     return this.proposals[idx];
   }
 

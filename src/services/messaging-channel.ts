@@ -172,8 +172,8 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
       true,
       true,
       [
-        { title: 'YES (Approve)', payload: 'YES' },
-        { title: 'NO (Reject)', payload: 'NO' },
+        { title: 'YES (Approve)', payload: `YES:${proposal.id}` },
+        { title: 'NO (Reject)', payload: `NO:${proposal.id}` },
         { title: 'Portfolio Status', payload: 'STATUS' },
       ],
       senderId
@@ -359,36 +359,47 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
       return { action: 'MENU', replyText };
     }
 
-    // Option 2 (Specific X Accounts) toggle & customization prompt
-    if (messageText === '2') {
+    // Option 2 (Specific X Accounts) manager & toggle
+    if (messageText === '2' || upper === 'X ACCOUNTS' || upper === 'X') {
       const modules = StrategyModuleService.getModules();
       const xMod = modules[1];
-      const updated = StrategyModuleService.toggleModule(xMod.id);
 
-      if (updated?.isActive) {
-        const replyText =
-          `⚙️ Specific X Accounts is now ACTIVATED ✅!\n\n` +
-          `Currently watching: ${updated.targets.join(', ')}.\n\n` +
-          `👉 Send any X handles or links you want to monitor, for example:\n` +
-          `• "@sama @tim_cook"\n` +
-          `• "https://x.com/satyanadella"\n` +
-          `• Or tap a quick reply below:`;
-
-        await this.addAgentMessage(replyText, undefined, false, true, [
-          { title: 'Add @sama', payload: 'ADD @sama' },
-          { title: 'Add @tim_cook', payload: 'ADD @tim_cook' },
-          { title: 'View Menu', payload: 'MENU' },
-          { title: 'Portfolio Status', payload: 'STATUS' },
-        ], senderId);
-        return { action: 'TOGGLE_X_STRATEGY', replyText, extra: { module: updated } };
-      } else {
-        const replyText = `⚙️ Specific X Accounts is now DISABLED ⚪. (Inactive)`;
-        await this.addAgentMessage(replyText, undefined, false, true, [
-          { title: 'View Menu', payload: 'MENU' },
-          { title: 'Portfolio Status', payload: 'STATUS' },
-        ], senderId);
-        return { action: 'TOGGLE_X_STRATEGY', replyText, extra: { module: updated } };
+      // Ensure it is activated when user selects it
+      if (!xMod.isActive) {
+        StrategyModuleService.toggleModule(xMod.id);
       }
+      const updated = StrategyModuleService.getModules()[1];
+
+      const replyText =
+        `⚙️ Specific X Accounts is ACTIVE ✅\n\n` +
+        `Currently watching: ${updated.targets.join(', ')}.\n\n` +
+        `👉 Send any X handles or links you want to monitor, for example:\n` +
+        `• "@sama @elonmusk"\n` +
+        `• "https://x.com/satyanadella"\n` +
+        `• Or tap a button below to add or scan:`;
+
+      await this.addAgentMessage(replyText, undefined, false, true, [
+        { title: 'Add @sama', payload: 'ADD @sama' },
+        { title: 'Add @tim_cook', payload: 'ADD @tim_cook' },
+        { title: 'Trigger Scan', payload: 'SCAN' },
+        { title: 'Turn Off', payload: 'DISABLE_X' },
+        { title: 'Strategy Menu', payload: 'MENU' },
+      ], senderId);
+      return { action: 'MANAGE_X_STRATEGY', replyText, extra: { module: updated } };
+    }
+
+    if (upper === 'DISABLE_X') {
+      const modules = StrategyModuleService.getModules();
+      const xMod = modules[1];
+      if (xMod.isActive) {
+        StrategyModuleService.toggleModule(xMod.id);
+      }
+      const replyText = `⚙️ Specific X Accounts is now DISABLED ⚪. (Inactive)\nTap "MENU" to re-enable anytime.`;
+      await this.addAgentMessage(replyText, undefined, false, true, [
+        { title: 'Strategy Menu', payload: 'MENU' },
+        { title: 'Portfolio Status', payload: 'STATUS' },
+      ], senderId);
+      return { action: 'DISABLED_X_STRATEGY', replyText };
     }
 
     // Generic Number toggles (1, 3, 4)
@@ -471,8 +482,22 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
     }
 
     // Proposals & Trade Approval flow
+    let targetProposalId: string | null = null;
+    if (upper.startsWith('YES:') || upper.startsWith('NO:')) {
+      const parts = messageText.split(':');
+      if (parts[1]) {
+        targetProposalId = parts[1].trim();
+      }
+    }
+
     const proposals = AuditLoggerService.getAllProposals();
-    const pendingProposal = proposals.find((p) => p.humanApprovalStatus === 'PENDING_APPROVAL');
+    let pendingProposal = targetProposalId
+      ? AuditLoggerService.getProposalById(targetProposalId)
+      : null;
+
+    if (!pendingProposal || pendingProposal.humanApprovalStatus !== 'PENDING_APPROVAL') {
+      pendingProposal = proposals.find((p) => p.humanApprovalStatus === 'PENDING_APPROVAL') || null;
+    }
 
     if (isAffirmative) {
       if (!pendingProposal) {
@@ -559,11 +584,28 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
 
   static isAffirmativeReply(text: string): boolean {
     const clean = text.trim().toLowerCase();
-    return clean === 'yes' || clean === 'y' || clean === 'approve' || clean === 'confirm' || clean === 'execute' || clean === 'buy' || clean === 'trade';
+    return (
+      clean === 'yes' ||
+      clean === 'y' ||
+      clean === 'approve' ||
+      clean === 'confirm' ||
+      clean === 'execute' ||
+      clean === 'buy' ||
+      clean === 'trade' ||
+      clean.startsWith('yes:')
+    );
   }
 
   static isNegativeReply(text: string): boolean {
     const clean = text.trim().toLowerCase();
-    return clean === 'no' || clean === 'n' || clean === 'reject' || clean === 'cancel' || clean === 'deny' || clean === 'skip';
+    return (
+      clean === 'no' ||
+      clean === 'n' ||
+      clean === 'reject' ||
+      clean === 'cancel' ||
+      clean === 'deny' ||
+      clean === 'skip' ||
+      clean.startsWith('no:')
+    );
   }
 }

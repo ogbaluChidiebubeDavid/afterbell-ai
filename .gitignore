@@ -22,3 +22,5 @@ yarn-error.log*
 *.pem
 Thumbs.db
 *.tsbuildinfo
+.claude/
+agent/

@@ -5,23 +5,34 @@ import {
   Bell,
   ArrowUpRight,
   MessageCircle,
+  Network,
+  ShieldCheck,
+  Award,
+  Terminal,
+  Smartphone,
+  CheckCircle2,
+  ExternalLink,
+  Zap,
 } from 'lucide-react';
 import { MessengerFrame } from '@/components/messenger-frame';
+import { ContagionTerminal } from '@/components/contagion-terminal';
 import { ArtifactsModal } from '@/components/artifacts-modal';
 import { PortfolioState } from '@/types/portfolio';
 import { TradeProposal } from '@/types/proposals';
 
-const DEFAULT_MESSENGER_URL = 'https://m.me/ExbitBot';
+const WHATSAPP_BOT_URL = 'https://wa.me/12018291736';
+const WHATSAPP_DISPLAY_PHONE = '+1 201-829-1736';
 
 export default function LandingPage() {
   const [portfolio, setPortfolio] = useState<PortfolioState | null>(null);
   const [proposals, setProposals] = useState<TradeProposal[]>([]);
   const [isSending, setIsSending] = useState(false);
+  const [activeView, setActiveView] = useState<'terminal' | 'chat'>('terminal');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalTab, setModalTab] = useState<'portfolio' | 'audit' | 'submission' | 'messenger'>('messenger');
+  const [modalTab, setModalTab] = useState<'portfolio' | 'audit' | 'submission' | 'messenger'>('portfolio');
 
-  // Fetch portfolio and proposals data for the modal
+  // Fetch portfolio and proposals data
   const loadData = async () => {
     try {
       const [portRes, propRes] = await Promise.all([
@@ -46,10 +57,10 @@ export default function LandingPage() {
   const handleSendMessage = async (text: string) => {
     setIsSending(true);
     try {
-      await fetch('/api/messenger/webhook', {
+      await fetch('/api/whatsapp/webhook', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, sender: 'USER' }),
+        body: JSON.stringify({ from: '12018291736', text }),
       });
       await loadData();
     } catch (err) {
@@ -59,13 +70,8 @@ export default function LandingPage() {
     }
   };
 
-  const handleOpenMessenger = () => {
-    const configuredUrl =
-      process.env.NEXT_PUBLIC_MESSENGER_PAGE_URL ||
-      localStorage.getItem('exbit_page_url') ||
-      DEFAULT_MESSENGER_URL;
-
-    window.open(configuredUrl, '_blank', 'noopener,noreferrer');
+  const openWhatsApp = () => {
+    window.open(WHATSAPP_BOT_URL, '_blank', 'noopener,noreferrer');
   };
 
   const openModal = (tab: 'portfolio' | 'audit' | 'submission' | 'messenger') => {
@@ -74,133 +80,242 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="h-screen max-h-screen bg-[#101010] text-[#eeeeeb] flex flex-col justify-between overflow-y-auto lg:overflow-hidden selection:bg-[#eeeeeb] selection:text-[#111]">
+    <div className="min-h-screen bg-[#0a0a0c] text-[#eeeeeb] flex flex-col justify-between selection:bg-emerald-500 selection:text-black">
       
       {/* Shell Container */}
-      <div className="w-full max-w-[1240px] mx-auto px-5 sm:px-8 lg:px-12 py-4 sm:py-5 lg:py-6 flex flex-col h-full max-h-screen justify-between gap-4 lg:gap-6">
+      <div className="w-full max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex flex-col min-h-screen justify-between gap-4">
         
-        {/* Masthead / Navbar */}
-        <header className="sticky top-0 z-40 bg-[#101010] flex items-center justify-between gap-4 border-b border-[#242424] pb-4 pt-1 sm:pb-5 shrink-0">
+        {/* 1. Header / Navbar */}
+        <header className="sticky top-0 z-40 bg-[#0a0a0c]/90 backdrop-blur-md flex items-center justify-between gap-3 border-b border-[#1f1f26] pb-3 pt-1 shrink-0">
           
-          {/* Left: Brand Identity / Logo */}
+          {/* Left: Brand Identity & Hackathon Track */}
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-b from-[#252528] to-[#151517] border border-[#38383c] flex items-center justify-center shadow-lg shadow-black/40 shrink-0">
-              <Bell className="w-4 h-4 text-emerald-400" />
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 p-0.5 flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0">
+              <div className="w-full h-full bg-[#101014] rounded-[10px] flex items-center justify-center">
+                <Bell className="w-4 h-4 text-emerald-400" />
+              </div>
             </div>
             
-            <span className="font-bold text-lg sm:text-xl tracking-tight text-[#eeeeeb]">
-              Exbit<span className="text-emerald-400 font-semibold">.ai</span>
-            </span>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-lg sm:text-xl tracking-tight text-white flex items-center gap-1">
+                  Exbit<span className="text-emerald-400 font-semibold">.ai</span>
+                </span>
+                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/25 hidden sm:inline-block">
+                  Bitget Track 1
+                </span>
+              </div>
+              <p className="text-[11px] text-[#888] hidden md:block">
+                Verifiable Conversational Trading via WhatsApp on Bitget rTokens
+              </p>
+            </div>
           </div>
 
-          {/* Right: Direct Messenger Launch & GitHub Button */}
-          <div className="flex items-center gap-2.5">
+          {/* Center: View Switcher (Terminal vs WhatsApp Chat) */}
+          <div className="flex items-center bg-[#131318] p-1 rounded-xl border border-[#23232c] text-xs font-medium">
             <button
-              onClick={handleOpenMessenger}
-              title="Open Exbit in Facebook Messenger"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#0084ff] hover:bg-[#0070d6] text-white transition-all shadow-md shadow-blue-500/20 active:scale-95 cursor-pointer"
+              onClick={() => setActiveView('terminal')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                activeView === 'terminal'
+                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 shadow'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
             >
-              <MessageCircle className="w-3.5 h-3.5" />
-              <span>Connect Messenger</span>
+              <Terminal className="w-3.5 h-3.5" />
+              <span>Contagion Terminal</span>
             </button>
+            <button
+              onClick={() => setActiveView('chat')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                activeView === 'chat'
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shadow'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              <Smartphone className="w-3.5 h-3.5" />
+              <span>WhatsApp Agent</span>
+            </button>
+          </div>
 
+          {/* Right: Direct WhatsApp Launch & Artifacts */}
+          <div className="flex items-center gap-2">
             <a
-              href="https://github.com/ogbaluChidiebubeDavid/afterbell-ai"
+              href={WHATSAPP_BOT_URL}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-[#aaa] hover:text-[#eeeeeb] bg-[#161616] hover:bg-[#202020] border border-[#2b2b2b] hover:border-[#3a3a3a] transition-all cursor-pointer shadow-sm"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#25d366] hover:bg-[#20ba59] text-slate-950 transition-all shadow-md shadow-emerald-500/25 active:scale-95 cursor-pointer"
             >
-              <svg className="w-3.5 h-3.5 fill-none stroke-current stroke-[1.8]" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.28-.36 6.72-1.61 6.72-7.25A5.65 5.65 0 0 0 19.22 3.3 5.4 5.4 0 0 0 19.08 1S17.9.65 15 2.48a13.38 13.38 0 0 0-7 0C5.1.65 3.92 1 3.92 1a5.4 5.4 0 0 0-.14 2.3A5.65 5.65 0 0 0 2.28 7.25c0 5.63 3.44 6.88 6.72 7.25A4.8 4.8 0 0 0 8 18v4"></path>
-                <path d="M8 19c-3 .9-3-1.5-4-2"></path>
-              </svg>
-              <span className="hidden sm:inline">GitHub</span>
-              <ArrowUpRight className="w-3 h-3 text-[#666]" />
+              <MessageCircle className="w-3.5 h-3.5 fill-current" />
+              <span className="hidden sm:inline">WhatsApp Bot</span>
+              <span className="sm:hidden">Chat</span>
+              <ExternalLink className="w-3 h-3 opacity-70" />
             </a>
+
+            <button
+              onClick={() => openModal('submission')}
+              className="hidden lg:flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium text-cyan-400 hover:text-cyan-300 bg-cyan-950/40 hover:bg-cyan-950/70 border border-cyan-500/30 transition-all"
+            >
+              <Award className="w-3.5 h-3.5" />
+              <span>Submission Pack</span>
+            </button>
           </div>
         </header>
 
-        {/* Main Hero & Content Grid */}
-        <main className="my-auto py-1 sm:py-2 flex items-center justify-center flex-1 relative z-10 overflow-visible">
-          <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(300px,0.85fr)] lg:gap-10 w-full">
-            
-            {/* Left Column: Clean Typography & Direct Messenger Launch */}
-            <section className="max-w-[760px] space-y-4 sm:space-y-5">
-              
-              {/* Track Pill */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-[#1a1a1a] border border-[#2d2d2d] text-[#aaa]">
-                <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                <span>Bitget AI Base Camp S2</span>
-                <span className="text-[#555]">•</span>
-                <span className="text-emerald-300">Agentic Trading Track</span>
-              </div>
-
-              {/* Punchy Hero Typography */}
-              <div className="space-y-1">
-                <h1 className="text-[clamp(42px,5.8vw,80px)] font-semibold leading-[0.98] tracking-[-0.07em] text-[#eeeeeb]">
-                  <span>Run trading</span>
-                  <span className="block -mt-[0.14em]">agents from</span>
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0084ff] via-[#00c6ff] to-[#30d158]">
-                    Messenger
-                  </span>
-                </h1>
-              </div>
-
-              <p className="text-[clamp(14px,1.4vw,18px)] text-[#999] leading-[1.4] max-w-[500px]">
-                Choose a strategy like tracking congressional trades, following specific X accounts, watching new IPO filings, or after-hours rToken pricing. You set the conditions, your agent runs around the clock and messages you on Facebook Messenger the moment it spots a signal.
-              </p>
-
-              {/* Strategic Primary CTA - Directly Opens Messenger Chatbox & Facebook Page */}
-              <div className="pt-2 flex flex-wrap items-center gap-3">
-                <button
-                  onClick={handleOpenMessenger}
-                  className="px-6 py-3 rounded-full text-sm font-semibold bg-[#0084ff] hover:bg-[#0070d6] text-white flex items-center gap-2.5 shadow-lg shadow-blue-500/25 active:scale-95 transition-all cursor-pointer"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                  <span>Launch on Facebook Messenger</span>
-                </button>
-
-                <a
-                  href="https://facebook.com/ExbitBot"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-4 py-2.5 rounded-full text-xs font-medium text-[#aaa] hover:text-[#fff] bg-[#181818] hover:bg-[#222] border border-[#2a2a2a] transition-all cursor-pointer flex items-center gap-1.5"
-                >
-                  <span>Facebook Page</span>
-                  <ArrowUpRight className="w-3 h-3 text-[#777]" />
-                </a>
-
-                <button
-                  onClick={() => openModal('messenger')}
-                  className="px-4 py-2.5 rounded-full text-xs font-medium text-[#888] hover:text-[#ccc] bg-[#161616] hover:bg-[#202020] border border-[#262626] transition-all cursor-pointer"
-                >
-                  Webhook Settings
-                </button>
-              </div>
-
-            </section>
-
-            {/* Right Column: Messenger Frame — Interactive Simulator */}
-            <div className="w-full flex items-start justify-center lg:justify-end pt-4 lg:pt-0">
-              <MessengerFrame
-                onSendMessage={handleSendMessage}
-                isSending={isSending}
-              />
+        {/* 2. Bold WhatsApp Connectivity Hero Callout Banner */}
+        <div className="rounded-2xl bg-gradient-to-r from-emerald-950/40 via-[#121218] to-cyan-950/40 border border-emerald-500/30 p-3.5 sm:p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
+          <div className="flex items-center gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
+              <MessageCircle className="w-5 h-5 fill-current" />
             </div>
-
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-sm sm:text-base font-bold text-white flex items-center gap-1.5">
+                  Live on WhatsApp:
+                  <a
+                    href={WHATSAPP_BOT_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-emerald-400 hover:underline font-mono"
+                  >
+                    {WHATSAPP_DISPLAY_PHONE}
+                  </a>
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30">
+                  ● INSTANTLY REACHABLE
+                </span>
+              </div>
+              <p className="text-xs text-zinc-400 mt-0.5">
+                No app install or Meta review wall. Open WhatsApp, send commands like <span className="text-white font-mono font-semibold">"STATUS"</span>, <span className="text-white font-mono font-semibold">"SCAN"</span>, or an X handle like <span className="text-white font-mono font-semibold">"@sama"</span> to execute verifiable paper trades on Bitget.
+              </p>
+            </div>
           </div>
+
+          <div className="flex items-center gap-2 self-stretch md:self-auto justify-end shrink-0">
+            <a
+              href={WHATSAPP_BOT_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center gap-1.5 transition-all shadow-md shadow-emerald-500/25 active:scale-95"
+            >
+              <span>Open in WhatsApp</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </a>
+
+            <button
+              onClick={() => openModal('audit')}
+              className="px-3.5 py-2 rounded-xl text-xs font-medium text-zinc-300 hover:text-white bg-[#1a1a22] hover:bg-[#252530] border border-[#2e2e3a] transition-all"
+            >
+              Audit Trail
+            </button>
+          </div>
+        </div>
+
+        {/* 3. Main Body: Switchable between Contagion Terminal and WhatsApp Phone Frame */}
+        <main className="flex-1 flex flex-col justify-center my-auto">
+          {activeView === 'terminal' ? (
+            /* Contagion Terminal View (Matches and Beats Cascadr) */
+            <ContagionTerminal onOpenWhatsApp={openWhatsApp} />
+          ) : (
+            /* Conversational Mobile Simulator View */
+            <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(300px,0.85fr)] lg:gap-10 w-full py-2">
+              {/* Left Column: Clean Typography & WhatsApp Guide */}
+              <section className="space-y-4 sm:space-y-5">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-[#14141a] border border-[#2b2b36] text-zinc-400">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  <span>Verifiable Conversational Trading</span>
+                  <span className="text-[#555]">•</span>
+                  <span className="text-emerald-300">Powered by Kapso Cloud API</span>
+                </div>
+
+                <div className="space-y-1">
+                  <h1 className="text-[clamp(38px,5vw,72px)] font-bold leading-[1.0] tracking-[-0.06em] text-white">
+                    <span>Trade after-hours</span>
+                    <span className="block text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500">
+                      directly on WhatsApp
+                    </span>
+                  </h1>
+                </div>
+
+                <p className="text-sm sm:text-base text-zinc-400 leading-relaxed max-w-[540px]">
+                  When stock markets close for the weekend, information never stops. ExBit perception agents monitor regulatory filings, SEC Form 8-Ks, Congressional stock disclosures, and key accounts around the clock. The moment high-shock catalysts break, ExBit models price transmission against 24/7 Bitget rTokens and messages you directly on WhatsApp for human approval.
+                </p>
+
+                {/* Quick WhatsApp Command Guide Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2 max-w-[620px]">
+                  <div className="p-2.5 rounded-xl bg-[#14141a] border border-[#23232c]">
+                    <span className="text-[10px] text-zinc-500 font-mono block">COMMAND</span>
+                    <span className="text-xs font-bold text-emerald-400 font-mono">STATUS</span>
+                    <p className="text-[10px] text-zinc-400 mt-1">Live portfolio equity & Sharpe ratio</p>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-[#14141a] border border-[#23232c]">
+                    <span className="text-[10px] text-zinc-500 font-mono block">COMMAND</span>
+                    <span className="text-xs font-bold text-cyan-400 font-mono">SCAN</span>
+                    <p className="text-[10px] text-zinc-400 mt-1">Instant after-hours perception scan</p>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-[#14141a] border border-[#23232c]">
+                    <span className="text-[10px] text-zinc-500 font-mono block">COMMAND</span>
+                    <span className="text-xs font-bold text-amber-400 font-mono">@sama</span>
+                    <p className="text-[10px] text-zinc-400 mt-1">Track any executive or analyst</p>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-[#14141a] border border-[#23232c]">
+                    <span className="text-[10px] text-zinc-500 font-mono block">COMMAND</span>
+                    <span className="text-xs font-bold text-white font-mono">YES / NO</span>
+                    <p className="text-[10px] text-zinc-400 mt-1">Approve paper order on Bitget</p>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex flex-wrap items-center gap-3">
+                  <a
+                    href={WHATSAPP_BOT_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-6 py-3 rounded-full text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center gap-2 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all"
+                  >
+                    <MessageCircle className="w-4 h-4 fill-current" />
+                    <span>Open Live WhatsApp Bot (+1 201-829-1736)</span>
+                  </a>
+
+                  <button
+                    onClick={() => setActiveView('terminal')}
+                    className="px-5 py-3 rounded-full text-xs font-semibold bg-[#1a1a22] hover:bg-[#252530] text-zinc-200 border border-[#2c2c38] transition-all flex items-center gap-1.5"
+                  >
+                    <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Switch to Contagion Terminal</span>
+                  </button>
+                </div>
+              </section>
+
+              {/* Right Column: WhatsApp Phone Simulator Frame */}
+              <div className="w-full flex items-start justify-center lg:justify-end pt-2 lg:pt-0">
+                <MessengerFrame
+                  onSendMessage={handleSendMessage}
+                  isSending={isSending}
+                />
+              </div>
+            </div>
+          )}
         </main>
 
-        {/* Footer */}
-        <footer className="border-t border-[#222] pt-3 pb-1 text-[10px] text-[#666] leading-[1.4] shrink-0">
+        {/* 4. Footer */}
+        <footer className="border-t border-[#1c1c22] pt-2.5 pb-1 text-[10px] text-[#71717a] flex flex-wrap items-center justify-between gap-2 shrink-0">
           <span>
-            For informational purposes only; not investment advice or a recommendation. Trading involves substantial risk, including the potential loss of your entire investment. AI agents may make mistakes or fail. You direct all agent activity and assume all risk for transactions your agents execute. Built for Bitget AI Base Camp Hackathon S2 (Track: Agentic Trading, Sub-Theme: Event-Driven Agent / After-Hours Information Pricing).
+            ExBit AI · Built for Bitget AI Base Camp Hackathon S2 (Track 1: Agentic Trading) · Verified on Bitget Isolated Paper Engine.
           </span>
+          <div className="flex items-center gap-3 font-mono">
+            <span>WHATSAPP: <span className="text-emerald-400 font-semibold">+1 201-829-1736</span></span>
+            <span className="text-zinc-600">|</span>
+            <button
+              onClick={() => openModal('submission')}
+              className="text-cyan-400 hover:underline"
+            >
+              View Submission Pack
+            </button>
+          </div>
         </footer>
 
       </div>
 
-      {/* Artifacts, Submission & Messenger Modal */}
+      {/* Artifacts, Submission & Portfolio Modal */}
       <ArtifactsModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

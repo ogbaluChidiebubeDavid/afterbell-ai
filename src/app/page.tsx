@@ -106,14 +106,6 @@ export default function LandingPage() {
             
             {/* Left Column: Clean Typography & Direct WhatsApp Launch */}
             <section className="max-w-[760px] space-y-4 sm:space-y-5">
-              
-              {/* Track Pill */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-[#1a1a1a] border border-[#2d2d2d] text-[#aaa]">
-                <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                <span>Bitget AI Base Camp S2</span>
-                <span className="text-[#555]">•</span>
-                <span className="text-emerald-300">Agentic Trading Track</span>
-              </div>
 
               {/* Punchy Hero Typography */}
               <div className="space-y-1">

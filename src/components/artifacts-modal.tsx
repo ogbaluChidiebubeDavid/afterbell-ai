@@ -110,11 +110,11 @@ export const ArtifactsModal: React.FC<ArtifactsModalProps> = ({
               <button
                 onClick={() => setTab('messenger')}
                 className={`px-3 py-1 rounded-lg transition-all font-medium whitespace-nowrap flex items-center gap-1.5 ${
-                  tab === 'messenger' ? 'bg-[#0084ff]/20 text-[#0084ff] border border-[#0084ff]/40 shadow' : 'text-[#888] hover:text-[#ccc]'
+                  tab === 'messenger' ? 'bg-[#25D366]/20 text-[#25D366] border border-[#25D366]/40 shadow' : 'text-[#888] hover:text-[#ccc]'
                 }`}
               >
-                <MessageCircle className="w-3.5 h-3.5 text-[#0084ff]" />
-                Messenger Live Setup
+                <MessageCircle className="w-3.5 h-3.5 text-[#25D366]" />
+                WhatsApp Live Setup
               </button>
               <button
                 onClick={() => setTab('submission')}
@@ -315,90 +315,79 @@ export const ArtifactsModal: React.FC<ArtifactsModalProps> = ({
             </div>
           )}
 
-          {/* TAB 3: FACEBOOK MESSENGER LIVE SETUP & WEBHOOK */}
+          {/* TAB 3: WHATSAPP LIVE SETUP & KAPSO WEBHOOK */}
           {tab === 'messenger' && (
             <div className="space-y-5">
               <div className="bg-[#181818] p-5 rounded-2xl border border-[#262626] space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-[#0084ff]/20 flex items-center justify-center">
-                      <MessageCircle className="w-4 h-4 text-[#0084ff]" />
+                    <div className="w-8 h-8 rounded-full bg-[#25D366]/20 flex items-center justify-center">
+                      <MessageCircle className="w-4 h-4 text-[#25D366]" />
                     </div>
                     <div>
-                      <span className="font-semibold text-sm text-white block">Facebook Messenger Webhook Gateway</span>
-                      <span className="text-[11px] text-[#888]">Meta Graph API v19.0 Integration</span>
+                      <span className="font-semibold text-sm text-white block">WhatsApp Gateway (Kapso Integration)</span>
+                      <span className="text-[11px] text-[#888]">Connected Number: +1 201-829-1736</span>
                     </div>
                   </div>
 
-                  <button
-                    onClick={runMessengerTest}
-                    disabled={isTesting}
-                    className="px-3.5 py-1.5 rounded-xl bg-[#0084ff] hover:bg-[#0070d6] text-white text-xs font-semibold flex items-center gap-1.5 transition-all disabled:opacity-50 shadow-lg shadow-blue-500/20"
+                  <a
+                    href="https://wa.me/12018291736?text=MENU"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3.5 py-1.5 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-black text-xs font-semibold flex items-center gap-1.5 transition-all shadow-lg shadow-emerald-500/20"
                   >
-                    <Radio className={`w-3.5 h-3.5 ${isTesting ? 'animate-spin' : ''}`} />
-                    {isTesting ? 'Testing Endpoint...' : 'Send Live Health Ping'}
-                  </button>
+                    <Send className="w-3.5 h-3.5 fill-black" />
+                    <span>Open WhatsApp Chat</span>
+                  </a>
                 </div>
-
-                {testResult && (
-                  <div className="bg-[#111] p-3 rounded-xl border border-[#222] font-mono text-[11px] space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[#888]">Status:</span>
-                      <span className="text-[#10b981] font-bold">{testResult.status || 'OK'}</span>
-                      <span className="text-[#888]">Mode:</span>
-                      <span className="text-[#0a84ff]">{testResult.mode}</span>
-                    </div>
-                    <div className="text-[#aaa] truncate">Service: {testResult.service}</div>
-                  </div>
-                )}
               </div>
 
               {/* Webhook Configuration Table */}
               <div className="bg-[#181818] p-5 rounded-2xl border border-[#262626] space-y-3">
                 <span className="font-semibold text-xs text-[#ccc] uppercase tracking-wider block">
-                  Meta Developer App Webhook Values
+                  Kapso WhatsApp Production Credentials
                 </span>
 
                 <div className="space-y-2 text-xs">
                   <div className="bg-[#111] p-3 rounded-xl border border-[#222] flex items-center justify-between gap-3">
                     <div>
-                      <span className="text-[#888] text-[10px] uppercase block">Official Facebook Page</span>
-                      <a href="https://facebook.com/ExbitBot" target="_blank" rel="noreferrer" className="font-mono text-cyan-400 hover:underline text-[12px]">https://facebook.com/ExbitBot</a>
+                      <span className="text-[#888] text-[10px] uppercase block">Official WhatsApp Number</span>
+                      <a href="https://wa.me/12018291736" target="_blank" rel="noreferrer" className="font-mono text-emerald-400 hover:underline text-[12px]">+1 201-829-1736</a>
                     </div>
                     <button
-                      onClick={() => copyToClipboard('https://facebook.com/ExbitBot', 'fb_page')}
+                      onClick={() => copyToClipboard('+12018291736', 'wa_number')}
                       className="px-2.5 py-1 rounded-lg bg-[#222] hover:bg-[#333] text-[11px] text-white"
                     >
-                      {copiedKey === 'fb_page' ? 'Copied' : 'Copy'}
+                      {copiedKey === 'wa_number' ? 'Copied' : 'Copy'}
                     </button>
                   </div>
 
                   <div className="bg-[#111] p-3 rounded-xl border border-[#222] flex items-center justify-between gap-3">
                     <div>
-                      <span className="text-[#888] text-[10px] uppercase block">Direct Messenger Chat URL</span>
-                      <a href="https://m.me/ExbitBot" target="_blank" rel="noreferrer" className="font-mono text-[#0084ff] hover:underline text-[12px]">https://m.me/ExbitBot</a>
+                      <span className="text-[#888] text-[10px] uppercase block">Direct WhatsApp Chat URL</span>
+                      <a href="https://wa.me/12018291736?text=MENU" target="_blank" rel="noreferrer" className="font-mono text-[#25D366] hover:underline text-[12px]">https://wa.me/12018291736?text=MENU</a>
                     </div>
                     <button
-                      onClick={() => copyToClipboard('https://m.me/ExbitBot', 'mme_url')}
+                      onClick={() => copyToClipboard('https://wa.me/12018291736?text=MENU', 'wa_url')}
                       className="px-2.5 py-1 rounded-lg bg-[#222] hover:bg-[#333] text-[11px] text-white"
                     >
-                      {copiedKey === 'mme_url' ? 'Copied' : 'Copy'}
+                      {copiedKey === 'wa_url' ? 'Copied' : 'Copy'}
                     </button>
                   </div>
 
                   <div className="bg-[#111] p-3 rounded-xl border border-[#222] flex items-center justify-between gap-3">
                     <div>
-                      <span className="text-[#888] text-[10px] uppercase block">Callback URL (Deploy on Vercel)</span>
+                      <span className="text-[#888] text-[10px] uppercase block">Webhook URL (Kapso Callback)</span>
                       <span className="font-mono text-white text-[12px]">
-                        {typeof window !== 'undefined' ? `${window.location.origin}/api/messenger/webhook` : 'https://<your-domain>/api/messenger/webhook'}
+                        {typeof window !== 'undefined' ? `${window.location.origin}/api/whatsapp/webhook` : 'https://afterbell-ai.vercel.app/api/whatsapp/webhook'}
                       </span>
                     </div>
                     <button
                       onClick={() =>
                         copyToClipboard(
                           typeof window !== 'undefined'
-                            ? `${window.location.origin}/api/messenger/webhook`
-                            : 'https://exbit-ai.vercel.app/api/messenger/webhook',
+                            ? `${window.location.origin}/api/whatsapp/webhook`
+                            : 'https://afterbell-ai.vercel.app/api/whatsapp/webhook',
                           'url'
                         )
                       }
@@ -410,14 +399,14 @@ export const ArtifactsModal: React.FC<ArtifactsModalProps> = ({
 
                   <div className="bg-[#111] p-3 rounded-xl border border-[#222] flex items-center justify-between gap-3">
                     <div>
-                      <span className="text-[#888] text-[10px] uppercase block">Verify Token (hub.verify_token)</span>
-                      <span className="font-mono text-white text-[12px]">exbit_messenger_verify_token</span>
+                      <span className="text-[#888] text-[10px] uppercase block">Phone Number ID</span>
+                      <span className="font-mono text-white text-[12px]">1452815264574436</span>
                     </div>
                     <button
-                      onClick={() => copyToClipboard('exbit_messenger_verify_token', 'token')}
+                      onClick={() => copyToClipboard('1452815264574436', 'phone_id')}
                       className="px-2.5 py-1 rounded-lg bg-[#222] hover:bg-[#333] text-[11px] text-white"
                     >
-                      {copiedKey === 'token' ? 'Copied' : 'Copy'}
+                      {copiedKey === 'phone_id' ? 'Copied' : 'Copy'}
                     </button>
                   </div>
                 </div>
@@ -426,27 +415,23 @@ export const ArtifactsModal: React.FC<ArtifactsModalProps> = ({
               {/* 4-Step Setup Guide */}
               <div className="bg-[#181818] p-5 rounded-2xl border border-[#262626] space-y-3 text-xs leading-relaxed text-[#bbb]">
                 <span className="font-semibold text-xs text-[#ccc] uppercase tracking-wider block">
-                  How to Connect to Real Facebook Messenger
+                  How Exbit Conversational Trading Operates on WhatsApp
                 </span>
 
                 <ol className="list-decimal list-inside space-y-2 text-[#aaa]">
                   <li>
-                    <strong className="text-white">Deploy to Vercel:</strong> Push this repo to GitHub and import it on Vercel with zero extra build configuration.
+                    <strong className="text-white">Continuous Ingestion:</strong> The agent monitors Congressional disclosures (STOCK Act PTRs), SEC 8-K/S-1 filings, and regulatory notices 24/7.
                   </li>
                   <li>
-                    <strong className="text-white">Create a Meta App:</strong> Go to <a href="https://developers.facebook.com" target="_blank" rel="noreferrer" className="text-[#0084ff] underline">developers.facebook.com</a>, create an App (type: Other / Business), and add the <strong>Messenger</strong> product.
+                    <strong className="text-white">Real-Time Transmission:</strong> When high-impact catalysts hit, Exbit computes shock scores (Shock &times; Beta) and checks Bitget after-hours rToken liquidity.
                   </li>
                   <li>
-                    <strong className="text-white">Generate Page Token:</strong> Link your Facebook Page in Messenger settings, click <strong>Generate Token</strong>, and paste it into Vercel Environment Variables as <code className="text-white font-mono bg-[#222] px-1 py-0.5 rounded">MESSENGER_PAGE_TOKEN</code>.
+                    <strong className="text-white">Human Approval Gate:</strong> Exbit dispatches an interactive WhatsApp proposal to <code className="text-white font-mono bg-[#222] px-1 py-0.5 rounded">+1 201-829-1736</code> with exact quotes and execution terms.
                   </li>
                   <li>
-                    <strong className="text-white">Subscribe Webhook:</strong> In Webhooks, enter your Vercel Callback URL and the Verify Token above, then subscribe to <code className="text-white font-mono bg-[#222] px-1 py-0.5 rounded">messages</code> and <code className="text-white font-mono bg-[#222] px-1 py-0.5 rounded">messaging_postbacks</code>.
+                    <strong className="text-white">Instant One-Tap Execution:</strong> The user replies <code className="text-white font-mono bg-[#222] px-1 py-0.5 rounded">YES</code> to execute a paper trade on Bitget, or <code className="text-white font-mono bg-[#222] px-1 py-0.5 rounded">NO</code> to reject.
                   </li>
                 </ol>
-
-                <p className="text-[11px] text-[#888] pt-1">
-                  Once subscribed, message your Facebook Page from your personal account at <a href="https://facebook.com/ExbitBot" target="_blank" rel="noreferrer" className="text-cyan-300 font-mono underline">facebook.com/ExbitBot</a> or directly open <a href="https://m.me/ExbitBot" target="_blank" rel="noreferrer" className="text-blue-400 font-mono underline">m.me/ExbitBot</a>. Exbit will instantly reply with active condition alerts and accept "YES" trade approvals!
-                </p>
               </div>
             </div>
           )}

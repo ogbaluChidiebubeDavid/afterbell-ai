@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   Bell,
-  ArrowUpRight,
   MessageCircle,
 } from 'lucide-react';
 import { MessengerFrame } from '@/components/messenger-frame';
@@ -12,7 +11,6 @@ import { PortfolioState } from '@/types/portfolio';
 import { TradeProposal } from '@/types/proposals';
 
 const DEFAULT_WHATSAPP_URL = 'https://wa.me/12018291736?text=MENU';
-const WHATSAPP_DISPLAY_PHONE = '+1 201-829-1736';
 
 export default function LandingPage() {
   const [portfolio, setPortfolio] = useState<PortfolioState | null>(null);
@@ -89,7 +87,7 @@ export default function LandingPage() {
             </span>
           </div>
 
-          {/* Right: Direct WhatsApp Launch & GitHub Button */}
+          {/* Right: Direct WhatsApp Launch */}
           <div className="flex items-center gap-2.5">
             <button
               onClick={handleOpenWhatsApp}
@@ -99,20 +97,6 @@ export default function LandingPage() {
               <MessageCircle className="w-3.5 h-3.5 fill-black" />
               <span>Connect WhatsApp</span>
             </button>
-
-            <a
-              href="https://github.com/ogbaluChidiebubeDavid/afterbell-ai"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-[#aaa] hover:text-[#eeeeeb] bg-[#161616] hover:bg-[#202020] border border-[#2b2b2b] hover:border-[#3a3a3a] transition-all cursor-pointer shadow-sm"
-            >
-              <svg className="w-3.5 h-3.5 fill-none stroke-current stroke-[1.8]" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.28-.36 6.72-1.61 6.72-7.25A5.65 5.65 0 0 0 19.22 3.3 5.4 5.4 0 0 0 19.08 1S17.9.65 15 2.48a13.38 13.38 0 0 0-7 0C5.1.65 3.92 1 3.92 1a5.4 5.4 0 0 0-.14 2.3A5.65 5.65 0 0 0 2.28 7.25c0 5.63 3.44 6.88 6.72 7.25A4.8 4.8 0 0 0 8 18v4"></path>
-                <path d="M8 19c-3 .9-3-1.5-4-2"></path>
-              </svg>
-              <span className="hidden sm:inline">GitHub</span>
-              <ArrowUpRight className="w-3 h-3 text-[#666]" />
-            </a>
           </div>
         </header>
 
@@ -154,23 +138,6 @@ export default function LandingPage() {
                 >
                   <MessageCircle className="w-4 h-4 fill-black" />
                   <span>Launch on WhatsApp</span>
-                </button>
-
-                <a
-                  href={`https://wa.me/12018291736?text=STATUS`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-4 py-2.5 rounded-full text-xs font-medium text-[#aaa] hover:text-[#fff] bg-[#181818] hover:bg-[#222] border border-[#2a2a2a] transition-all cursor-pointer flex items-center gap-1.5"
-                >
-                  <span>WhatsApp: {WHATSAPP_DISPLAY_PHONE}</span>
-                  <ArrowUpRight className="w-3 h-3 text-[#777]" />
-                </a>
-
-                <button
-                  onClick={() => openModal('portfolio')}
-                  className="px-4 py-2.5 rounded-full text-xs font-medium text-[#888] hover:text-[#ccc] bg-[#161616] hover:bg-[#202020] border border-[#262626] transition-all cursor-pointer"
-                >
-                  Portfolio Radar
                 </button>
               </div>
 

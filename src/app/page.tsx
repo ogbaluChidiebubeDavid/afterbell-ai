@@ -5,7 +5,7 @@ import {
   Bell,
   MessageCircle,
 } from 'lucide-react';
-import { MessengerFrame } from '@/components/messenger-frame';
+import { WhatsAppPhoneFrame } from '@/components/whatsapp-phone-frame';
 import { ArtifactsModal } from '@/components/artifacts-modal';
 import { PortfolioState } from '@/types/portfolio';
 import { TradeProposal } from '@/types/proposals';
@@ -18,7 +18,7 @@ export default function LandingPage() {
   const [isSending, setIsSending] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalTab, setModalTab] = useState<'portfolio' | 'audit' | 'submission' | 'messenger'>('portfolio');
+  const [modalTab, setModalTab] = useState<'portfolio' | 'audit' | 'submission' | 'whatsapp'>('portfolio');
 
   // Fetch portfolio and proposals data
   const loadData = async () => {
@@ -62,7 +62,7 @@ export default function LandingPage() {
     window.open(DEFAULT_WHATSAPP_URL, '_blank', 'noopener,noreferrer');
   };
 
-  const openModal = (tab: 'portfolio' | 'audit' | 'submission' | 'messenger') => {
+  const openModal = (tab: 'portfolio' | 'audit' | 'submission' | 'whatsapp') => {
     setModalTab(tab);
     setIsModalOpen(true);
   };
@@ -137,7 +137,7 @@ export default function LandingPage() {
 
             {/* Right Column: Interactive Phone Simulator */}
             <div className="w-full flex items-start justify-center lg:justify-end pt-4 lg:pt-0">
-              <MessengerFrame
+              <WhatsAppPhoneFrame
                 onSendMessage={handleSendMessage}
                 isSending={isSending}
               />

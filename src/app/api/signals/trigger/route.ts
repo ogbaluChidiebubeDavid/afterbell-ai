@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     // Save to audit log
     AuditLoggerService.addProposal(proposal);
 
-    // Dispatch to Facebook Messenger channel
+    // Dispatch to WhatsApp channel
     const alertText = MessagingChannelService.formatAlertText(proposal);
     MessagingChannelService.addAgentMessage(alertText, proposal.id, true, true, [
       { title: 'Reply YES', payload: 'YES' },

@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   const skillMarkdown = `# Exbit Trading Agent Skill (Bitget AI Base Camp Hackathon S2)
 
-Exbit is an event-driven AI trading assistant reachable over Facebook Messenger that watches for market-moving events while US equities are closed (weekends, overnight, after-hours) and proposes trades in tokenized US stocks (rToken) on Bitget before the native market reopens.
+Exbit is an event-driven AI trading assistant reachable over WhatsApp that watches for market-moving events while US equities are closed (weekends, overnight, after-hours) and proposes trades in tokenized US stocks (rToken) on Bitget before the native market reopens.
 
 ## User-Configured Strategy Modules
 1. Congressional trades: Track disclosed trades from specific members of Congress (e.g. Nancy Pelosi, Dan Crenshaw).

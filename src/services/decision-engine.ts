@@ -100,7 +100,7 @@ export class DecisionEngineService {
       dryRun,
       messageAlertSent: true,
       messageSentTimestamp: new Date().toISOString(),
-      channel: 'Messenger',
+      channel: 'WhatsApp',
     };
 
     return proposal;

@@ -66,7 +66,7 @@ export interface TradeProposal {
   orderExecutionId?: string;
   messageAlertSent: boolean;
   messageSentTimestamp?: string;
-  channel: 'Messenger' | 'Web_Simulator' | 'Direct_API';
+  channel: 'WhatsApp' | 'Web_Simulator' | 'Direct_API';
 }
 
 export interface TradeProposalFilter {

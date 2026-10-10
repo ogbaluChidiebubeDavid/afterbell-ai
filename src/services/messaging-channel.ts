@@ -5,6 +5,7 @@ import { BitgetHubClientService } from './bitget-hub-client';
 import { DecisionEngineService } from './decision-engine';
 import { PortfolioManagerService } from './portfolio-manager';
 import { StrategyModuleService } from './strategy-modules';
+import { WhatsAppChannelService } from './whatsapp-channel';
 
 export interface ChatMessage {
   id: string;
@@ -32,7 +33,7 @@ export class MessagingChannelService {
       id: "msg-welcome-01",
       sender: "EXBIT_AGENT",
       timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-      text: "🔔 Exbit Agent connected via Facebook Messenger. Watching US Equities After-Hours & Weekend Gap for Bitget rToken trading.\n\nType STATUS anytime, or MENU to choose what conditions to watch around the clock.",
+      text: "🔔 Exbit Agent connected via WhatsApp (+1 201-829-1736). Watching US Equities After-Hours & Weekend Gap for Bitget rToken trading.\n\nType STATUS anytime, or MENU to choose what conditions to watch around the clock.",
     },
     {
       id: "msg-alert-nvda",
@@ -55,11 +56,12 @@ Reply "YES" to approve paper order, or "NO" to discard.`,
   ];
 
   /**
-   * Sets the active Facebook Messenger recipient ID (PSID)
+   * Sets the active WhatsApp recipient phone / chat ID
    */
   static setActiveRecipient(recipientId: string) {
     if (recipientId && recipientId.trim()) {
       this.activeRecipientId = recipientId.trim();
+      WhatsAppChannelService.setActiveRecipient(recipientId.trim());
       console.log(`[MessagingChannel] Active recipient ID set to: ${this.activeRecipientId}`);
     }
   }
@@ -70,19 +72,20 @@ Reply "YES" to approve paper order, or "NO" to discard.`,
   static getActiveRecipient(): string | null {
     return (
       this.activeRecipientId ||
-      process.env.MESSENGER_RECIPIENT_ID ||
-      process.env.MESSENGER_RECIPIENT_PSID ||
+      WhatsAppChannelService.getActiveRecipient() ||
+      process.env.WHATSAPP_RECIPIENT_PHONE ||
+      process.env.USER_PHONE_NUMBER ||
       null
     );
   }
 
   /**
-   * Returns true if Facebook Messenger access token is configured
+   * Returns true if WhatsApp access token / Kapso API key is configured
    */
   static isConfigured(): boolean {
     const token =
-      process.env.MESSENGER_PAGE_TOKEN ||
-      process.env.MESSENGER_PAGE_ACCESS_TOKEN;
+      process.env.KAPSO_API_KEY ||
+      process.env.WHATSAPP_ACCESS_TOKEN;
     return Boolean(token && token.trim());
   }
 
@@ -90,17 +93,7 @@ Reply "YES" to approve paper order, or "NO" to discard.`,
    * Formats trade proposal alert with explainable thesis and dryRun preview
    */
   static formatAlertText(proposal: TradeProposal): string {
-    return `🚨 EXBIT ALERT [${proposal.underlying}]
-Target: ${proposal.asset}
-Direction: ${proposal.direction} @ $${proposal.entryPrice.toFixed(2)}
-Size: $${proposal.positionSizeUsdt.toFixed(2)} USDT (~${proposal.positionSizeTokens} ${proposal.asset})
-Confidence: ${proposal.confidenceScore}%
-
-Rationale: ${proposal.rationale.afterHoursInformationGap}
-
-DryRun: ${proposal.dryRun.passed ? 'PASSED' : 'FLAGGED'} (Est. slippage: ${proposal.dryRun.estimatedSlippagePercent}%, Fee: $${proposal.dryRun.estimatedFeeUsdt.toFixed(2)} USDT)
-
-Reply "YES" to approve paper order, or "NO" to discard.`;
+    return WhatsAppChannelService.formatAlertText(proposal);
   }
 
   /**
@@ -183,22 +176,16 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
   }
 
   /**
-   * Sends a message to the user via Facebook Messenger Send API
+   * Sends a message to the user via WhatsApp
    */
   static async notifyUser(
     text: string,
     overrideRecipient?: string,
-    quickReplies?: Array<{ title: string; payload: string }>
+    _quickReplies?: Array<{ title: string; payload: string }>
   ): Promise<DispatchResult> {
-    const accessToken = (
-      process.env.MESSENGER_PAGE_TOKEN ||
-      process.env.MESSENGER_PAGE_ACCESS_TOKEN ||
-      ''
-    ).trim();
-
     const recipientId = overrideRecipient || this.getActiveRecipient();
 
-    if (!accessToken || !recipientId) {
+    if (!recipientId || !this.isConfigured()) {
       console.log('[MessagingChannel] Running in local simulator mode.');
       return {
         success: true,
@@ -208,62 +195,24 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
     }
 
     try {
-      console.log(`[MessagingChannel] Dispatching via Meta Graph API to: ${recipientId}...`);
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 9000);
-
-      const payload: any = {
-        recipient: { id: recipientId },
-        messaging_type: 'RESPONSE',
-        message: {
-          text,
-        },
-      };
-
-      if (quickReplies && quickReplies.length > 0) {
-        payload.message.quick_replies = quickReplies.map((qr) => ({
-          content_type: 'text',
-          title: qr.title,
-          payload: qr.payload,
-        }));
-      }
-
-      const res = await fetch(
-        `https://graph.facebook.com/v19.0/me/messages?access_token=${encodeURIComponent(accessToken)}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-          signal: controller.signal,
-        }
-      );
-
-      clearTimeout(timeoutId);
-
-      const responseData = await res.json().catch(() => ({ statusText: res.statusText }));
-
-      if (!res.ok) {
-        console.error(`[MessagingChannel] Meta Send API error ${res.status}:`, responseData);
+      console.log(`[MessagingChannel] Dispatching via WhatsApp to: ${recipientId}...`);
+      const result = await WhatsAppChannelService.sendTextMessage(recipientId, text);
+      if (result.success) {
+        console.log(`[MessagingChannel] ✅ Real message delivered on WhatsApp to ${recipientId}!`);
+        return {
+          success: true,
+          mode: 'LIVE',
+          recipient: recipientId,
+          responseData: result.response,
+        };
+      } else {
+        console.warn(`[MessagingChannel] WhatsApp dispatch failed: ${result.error}`);
         return {
           success: false,
           mode: 'LIVE',
-          status: res.status,
-          error: `Meta Graph API error HTTP ${res.status}: ${JSON.stringify(responseData)}`,
-          responseData,
+          error: result.error,
         };
       }
-
-      console.log(`[MessagingChannel] ✅ Real message delivered on Messenger to ${recipientId}!`);
-      return {
-        success: true,
-        mode: 'LIVE',
-        status: res.status,
-        recipient: recipientId,
-        responseData,
-      };
     } catch (err: any) {
       console.error('[MessagingChannel] Network dispatch error:', err.message);
       return {
@@ -275,7 +224,7 @@ Reply "YES" to approve paper order, or "NO" to discard.`;
   }
 
   /**
-   * Adds an agent message to session history and dispatches to Facebook Messenger
+   * Adds an agent message to session history and dispatches to WhatsApp
    */
   static async addAgentMessage(
     text: string,

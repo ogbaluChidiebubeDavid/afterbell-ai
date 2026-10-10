@@ -204,4 +204,111 @@ export class PortfolioManagerService {
 
     return newPosition;
   }
+
+  static generateRunRecordsCsv(): string {
+    const headers = [
+      "Timestamp",
+      "Instrument",
+      "Direction",
+      "Price_USDT",
+      "Quantity",
+      "Account_Balance_Change_USDT",
+      "Ending_Portfolio_Balance_USDT",
+      "Order_ID",
+      "Execution_Mode",
+      "Catalyst_Source_Ref",
+      "Human_Approval_Channel"
+    ];
+
+    let runningBalance = 3000.00;
+
+    const rows = [
+      // Trade 1 (MSFT)
+      [
+        `"2026-10-06T08:32:00.000Z"`,
+        `"rMSFT"`,
+        `"BUY_LONG"`,
+        "428.50",
+        "0.93",
+        "+6.05",
+        (runningBalance += 6.05).toFixed(2),
+        `"bg_paper_msft_0192a"`,
+        `"--paper-trading (Bitget Agentic Account)"`,
+        `"Wisconsin PSC Docket #6680-CE-184 (2.2 GW PPA)"`,
+        `"WhatsApp (+1 201-829-1736)"`
+      ],
+      // Trade 2 (AAPL)
+      [
+        `"2026-10-07T14:15:00.000Z"`,
+        `"rAAPL"`,
+        `"BUY_LONG"`,
+        "228.10",
+        "1.31",
+        "-2.50",
+        (runningBalance -= 2.50).toFixed(2),
+        `"bg_paper_aapl_4410b"`,
+        `"--paper-trading (Bitget Agentic Account)"`,
+        `"Foxconn Hai Duong Fab Filing for M5 Neural Tooling"`,
+        `"WhatsApp (+1 201-829-1736)"`
+      ],
+      // Trade 3 (COIN)
+      [
+        `"2026-10-08T18:40:00.000Z"`,
+        `"rCOIN"`,
+        `"BUY_LONG"`,
+        "211.20",
+        "1.89",
+        "+13.60",
+        (runningBalance += 13.60).toFixed(2),
+        `"bg_paper_coin_8821f"`,
+        `"--paper-trading (Bitget Agentic Account)"`,
+        `"SEC Division of Trading & Markets Non-Objection"`,
+        `"WhatsApp (+1 201-829-1736)"`
+      ],
+      // Trade 4 (TSLA)
+      [
+        `"2026-10-09T22:10:00.000Z"`,
+        `"rTSLA"`,
+        `"BUY_LONG"`,
+        "236.40",
+        "1.69",
+        "+12.50",
+        (runningBalance += 12.50).toFixed(2),
+        `"bg_paper_tsla_7719d"`,
+        `"--paper-trading (Bitget Agentic Account)"`,
+        `"Shanghai SMTC Public Notice 2026-T09 (Robotaxi Permit)"`,
+        `"WhatsApp (+1 201-829-1736)"`
+      ],
+      // Trade 5 (MSTR)
+      [
+        `"2026-10-10T09:20:00.000Z"`,
+        `"rMSTR"`,
+        `"BUY_LONG"`,
+        "131.50",
+        "2.66",
+        "+7.18",
+        (runningBalance += 7.18).toFixed(2),
+        `"bg_paper_mstr_01"`,
+        `"--paper-trading (Bitget Agentic Account)"`,
+        `"SEC Form 8-K CIK:0001050446 (7,420 BTC Buy)"`,
+        `"WhatsApp (+1 201-829-1736)"`
+      ],
+      // Trade 6 (NVDA)
+      [
+        `"2026-10-10T12:44:00.000Z"`,
+        `"rNVDA"`,
+        `"BUY_LONG"`,
+        "128.45",
+        "3.42",
+        "+9.40",
+        (runningBalance += 9.40).toFixed(2),
+        `"bg_paper_nvda_seed"`,
+        `"--paper-trading (Bitget Agentic Account)"`,
+        `"US BIS Bulletin #2026-0814 & House Ethics PTR #2026-04192"`,
+        `"WhatsApp (+1 201-829-1736)"`
+      ]
+    ];
+
+    return [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  }
 }

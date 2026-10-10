@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Exbit AI — Run trading agents from Messenger',
+  title: 'Exbit AI — Run trading agents from WhatsApp',
   description: 'Deploy your own after-hours trading agent for Bitget tokenized US stocks (rToken) with a couple of clicks.',
 };
 

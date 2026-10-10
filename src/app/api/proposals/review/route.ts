@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (action === 'REJECT') {
-      const reason = rejectionReason || 'User rejected trade proposal via Messenger interface';
+      const reason = rejectionReason || 'User rejected trade proposal via WhatsApp interface';
       AuditLoggerService.updateProposal(proposalId, {
         humanApprovalStatus: 'REJECTED',
         rejectionReason: reason,
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
       // Update paper portfolio
       const position = PortfolioManagerService.openPositionFromOrder(proposal, orderResponse);
 
-      // Send confirmation to Messenger
+      // Send confirmation to WhatsApp
       MessagingChannelService.addAgentMessage(
         `✅ ORDER EXECUTED [Bitget Agent Hub Paper Trading]\nAsset: ${proposal.asset}\nSide: ${proposal.direction}\nFill Price: $${orderResponse.fillPrice.toFixed(2)} USDT\nQty: ${orderResponse.fillQuantity} tokens ($${(orderResponse.fillPrice * orderResponse.fillQuantity).toFixed(2)})\nOrder ID: ${orderResponse.orderId}\nMode: --paper-trading (Isolated Account)`,
         proposalId,

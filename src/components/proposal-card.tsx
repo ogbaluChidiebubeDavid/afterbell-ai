@@ -54,7 +54,7 @@ export const ProposalCard: React.FC<ProposalCardProps> = ({
           {isPending && (
             <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30 flex items-center gap-1.5 animate-pulse">
               <span className="w-2 h-2 rounded-full bg-amber-400" />
-              Awaiting Human Approval (WhatsApp / Messenger)
+              Awaiting Human Approval (WhatsApp)
             </span>
           )}
           {isApproved && (
@@ -196,7 +196,7 @@ export const ProposalCard: React.FC<ProposalCardProps> = ({
       {isPending && (
         <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 bg-cyan-950/20 p-3 rounded-xl border border-cyan-500/30">
           <div className="text-xs text-cyan-200">
-            <strong>Human Approval Required:</strong> You can approve directly below or reply <strong>"YES"</strong> via WhatsApp or Messenger.
+            <strong>Human Approval Required:</strong> You can approve directly below or reply <strong>"YES"</strong> via WhatsApp.
           </div>
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <button

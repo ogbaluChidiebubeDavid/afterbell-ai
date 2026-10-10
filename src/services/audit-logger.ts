@@ -51,7 +51,7 @@ export class AuditLoggerService {
       },
       messageAlertSent: true,
       messageSentTimestamp: new Date(Date.now() - 1000 * 60 * 18).toISOString(),
-      channel: "Messenger",
+      channel: "WhatsApp",
     },
     {
       id: "prop-mstr-hist",
@@ -93,7 +93,7 @@ export class AuditLoggerService {
       },
       orderExecutionId: "bg_paper_mstr_01",
       messageAlertSent: true,
-      channel: "Messenger",
+      channel: "WhatsApp",
     },
     {
       id: "prop-rejected-risk-example",
@@ -161,7 +161,7 @@ export class AuditLoggerService {
       riskFlags: ["Broad macro beta rather than idiosyncratic catalyst"],
       riskCheckStatus: "PASSED",
       humanApprovalStatus: "REJECTED",
-      rejectionReason: "User replied 'NO' via Messenger: Preferred conserving cash for higher-conviction NVDA event.",
+      rejectionReason: "User replied 'NO' via WhatsApp: Preferred conserving cash for higher-conviction NVDA event.",
       dryRun: {
         passed: true,
         simulatedPrice: 226.50,
@@ -173,7 +173,7 @@ export class AuditLoggerService {
         checks: [{ rule: "Risk Gate", passed: true, detail: "All rules cleared" }],
       },
       messageAlertSent: true,
-      channel: "Messenger",
+      channel: "WhatsApp",
     },
   ];
 

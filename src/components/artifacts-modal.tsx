@@ -22,11 +22,12 @@ import {
 } from 'lucide-react';
 import { PortfolioState } from '@/types/portfolio';
 import { TradeProposal } from '@/types/proposals';
+import { SubmissionPack } from '@/components/submission-pack';
 
 interface ArtifactsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  initialTab?: 'portfolio' | 'audit' | 'submission' | 'messenger';
+  initialTab?: 'portfolio' | 'audit' | 'submission' | 'whatsapp';
   portfolio: PortfolioState | null;
   proposals: TradeProposal[];
 }
@@ -38,10 +39,8 @@ export const ArtifactsModal: React.FC<ArtifactsModalProps> = ({
   portfolio,
   proposals,
 }) => {
-  const [tab, setTab] = useState<'portfolio' | 'audit' | 'submission' | 'messenger'>(initialTab);
+  const [tab, setTab] = useState<'portfolio' | 'audit' | 'submission' | 'whatsapp'>(initialTab);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [testResult, setTestResult] = useState<any>(null);
-  const [isTesting, setIsTesting] = useState(false);
 
   if (!isOpen) return null;
 
@@ -57,19 +56,6 @@ export const ArtifactsModal: React.FC<ArtifactsModalProps> = ({
 
   const handleDownloadJson = () => {
     window.open('/api/export?format=json', '_blank');
-  };
-
-  const runMessengerTest = async () => {
-    setIsTesting(true);
-    try {
-      const res = await fetch('/api/messenger/test');
-      const data = await res.json();
-      setTestResult(data);
-    } catch (err: any) {
-      setTestResult({ error: err.message });
-    } finally {
-      setIsTesting(false);
-    }
   };
 
   const metrics = portfolio?.metrics;
@@ -108,9 +94,9 @@ export const ArtifactsModal: React.FC<ArtifactsModalProps> = ({
                 Explainability Log
               </button>
               <button
-                onClick={() => setTab('messenger')}
+                onClick={() => setTab('whatsapp')}
                 className={`px-3 py-1 rounded-lg transition-all font-medium whitespace-nowrap flex items-center gap-1.5 ${
-                  tab === 'messenger' ? 'bg-[#25D366]/20 text-[#25D366] border border-[#25D366]/40 shadow' : 'text-[#888] hover:text-[#ccc]'
+                  tab === 'whatsapp' ? 'bg-[#25D366]/20 text-[#25D366] border border-[#25D366]/40 shadow' : 'text-[#888] hover:text-[#ccc]'
                 }`}
               >
                 <MessageCircle className="w-3.5 h-3.5 text-[#25D366]" />
@@ -316,7 +302,7 @@ export const ArtifactsModal: React.FC<ArtifactsModalProps> = ({
           )}
 
           {/* TAB 3: WHATSAPP LIVE SETUP & KAPSO WEBHOOK */}
-          {tab === 'messenger' && (
+          {tab === 'whatsapp' && (
             <div className="space-y-5">
               <div className="bg-[#181818] p-5 rounded-2xl border border-[#262626] space-y-3">
                 <div className="flex items-center justify-between">
@@ -438,57 +424,7 @@ export const ArtifactsModal: React.FC<ArtifactsModalProps> = ({
 
           {/* TAB 4: SUBMISSION PACK */}
           {tab === 'submission' && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between pb-2 border-b border-[#242424]">
-                <div>
-                  <span className="font-semibold text-xs text-[#ccc] block">Bitget Hackathon S2 Submission Pack</span>
-                  <span className="text-[11px] text-[#888]">1-Click copy fields for Google Form &amp; Compliant X Post</span>
-                </div>
-                <a
-                  href="https://forms.gle/GyWZCMCPocgJdJon6"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-3 py-1.5 rounded-xl bg-[#0a84ff] hover:bg-[#0071e3] text-xs font-semibold text-white flex items-center gap-1.5 transition-all shadow-lg shadow-blue-500/20"
-                >
-                  <span>Open Form</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-              </div>
-
-              {[
-                {
-                  id: 'thesis',
-                  title: 'Part 1: Thesis & Sub-Theme (After-Hours Information Pricing)',
-                  text: `Exbit is an event-driven AI trading assistant reachable over Facebook Messenger where users set the conditions they care about (congressional trades, specific X accounts, IPO filings). It watches for market-moving events while US equities are closed (weekends, overnight, after-hours) and proposes trades in tokenized US stocks (rToken) on Bitget before native markets reopen.\n\nNative US equities sleep on weekends (~65.5 hour gap); rToken doesn't. Exbit monitors that exact temporal gap, reasoning through after-hours information pricing with Claude/Gemini and executing on Bitget Agent Hub in --paper-trading mode strictly with human approval.`,
-                },
-                {
-                  id: 'metrics',
-                  title: 'Part 3: Quantitative Metrics & Validation',
-                  text: `Paper Trading Sharpe Ratio: 2.38\nMax Drawdown: 1.85%\nWin Rate: 71.4%\nProfit Factor: 2.85x\nRisk Guardrail: $500 max position size, 3 trades/day frequency cap, 75% min confidence threshold.\nZero unapproved orders: 100% gated by human reply.`,
-                },
-                {
-                  id: 'x_post',
-                  title: 'Required Compliant X Promo Post (#BitgetHackathon + @Bitget_AI)',
-                  text: `Excited to introduce Exbit for the #BitgetHackathon S2 (Track: Agentic Trading) with @Bitget_AI! 🔔⚡\n\nUS equities sleep 65+ hours on weekends. Global news doesn't.\nExbit is a Facebook Messenger trading agent where you choose conditions to watch (congressional trades, X accounts, IPOs). It runs 24/7 and proposes trades in tokenized US stocks (rTokens) on Bitget before Wall Street reopens.\n\n• 24/7 Bitget rToken paper trading via Agent Hub MCP\n• Human-in-the-loop Messenger execution (https://m.me/ExbitBot)\n• Sharpe 2.38 paper portfolio & explainability trail\n\n#BitgetHackathon @Bitget_AI #AI #AgenticTrading`,
-                },
-              ].map((item) => (
-                <div key={item.id} className="bg-[#181818] p-4 rounded-2xl border border-[#262626] space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-xs text-[#aaa]">{item.title}</span>
-                    <button
-                      onClick={() => copyToClipboard(item.text, item.id)}
-                      className="px-2.5 py-1 rounded-lg bg-[#242424] hover:bg-[#333] text-[11px] font-semibold text-white flex items-center gap-1 transition-all"
-                    >
-                      {copiedKey === item.id ? <Check className="w-3 h-3 text-[#10b981]" /> : <Copy className="w-3 h-3" />}
-                      {copiedKey === item.id ? 'Copied' : 'Copy'}
-                    </button>
-                  </div>
-                  <pre className="text-xs text-[#ccc] font-sans whitespace-pre-wrap leading-relaxed bg-[#111] p-3 rounded-xl border border-[#222]">
-                    {item.text}
-                  </pre>
-                </div>
-              ))}
-            </div>
+            <SubmissionPack />
           )}
 
         </div>

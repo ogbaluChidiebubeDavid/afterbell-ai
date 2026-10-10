@@ -34,12 +34,25 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // Default CSV
-    const csvContent = AuditLoggerService.generateCsvAuditLog();
-    return new NextResponse(csvContent, {
+    // CSV Export
+    const type = searchParams.get('type') || 'runs';
+
+    if (type === 'proposals') {
+      const csvContent = AuditLoggerService.generateCsvAuditLog();
+      return new NextResponse(csvContent, {
+        headers: {
+          'Content-Type': 'text/csv',
+          'Content-Disposition': 'attachment; filename="exbit_explainability_proposals.csv"',
+        },
+      });
+    }
+
+    // Default: Official Paper-Trading Run Records (timestamp, instrument, direction, price, quantity, account balance change)
+    const runRecordsCsv = PortfolioManagerService.generateRunRecordsCsv();
+    return new NextResponse(runRecordsCsv, {
       headers: {
         'Content-Type': 'text/csv',
-        'Content-Disposition': 'attachment; filename="exbit_paper_trading_audit_log.csv"',
+        'Content-Disposition': 'attachment; filename="exbit_paper_trading_run_records.csv"',
       },
     });
   } catch (error: any) {

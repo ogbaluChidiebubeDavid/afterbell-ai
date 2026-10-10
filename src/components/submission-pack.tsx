@@ -130,10 +130,10 @@ The true breakthrough is "Conversational, Fund-Isolated Agentic Trading":
     {
       key: 'submission_links',
       title: 'Field 5 · Submission Material Links (One Link Per Line)*',
-      content: `Project link: https://afterbell-ai.vercel.app (Interactive Web Terminal & Live Demo)
+      content: `Project link: https://exbit-ai.vercel.app (Interactive Web Terminal & Live Demo)
 Project link (GitHub): https://github.com/ogbaluChidiebubeDavid/afterbell-ai (Public Repository with Architecture Documentation)
-Run records (Paper Trading CSV): https://afterbell-ai.vercel.app/api/export?format=csv (Official Run Records: Timestamp, Instrument, Direction, Price, Quantity, Account Balance Change)
-Run records (JSON Bundle): https://afterbell-ai.vercel.app/api/export?format=json (Quantitative Metrics, Open Positions, Closed Trades, Explainability Trail)
+Run records (Paper Trading CSV): https://exbit-ai.vercel.app/api/export?format=csv (Official Run Records: Timestamp, Instrument, Direction, Price, Quantity, Account Balance Change)
+Run records (JSON Bundle): https://exbit-ai.vercel.app/api/export?format=json (Quantitative Metrics, Open Positions, Closed Trades, Explainability Trail)
 WhatsApp Trading Assistant: https://wa.me/12018291736 (+1 201-829-1736 Connected via Kapso)
 Demo video: [Insert your public X post link or Loom / YouTube link here]`,
     },
@@ -167,9 +167,9 @@ Exbit is a 24/7 WhatsApp AI trading assistant (+1 201-829-1736) that prices afte
 • Strict human-in-the-loop WhatsApp approval gate ("YES")
 • Verifiable run records: Sharpe 2.38 | Max Drawdown 1.85% | Win Rate 71.4%
 
-Live Demo: https://afterbell-ai.vercel.app
+Live Demo: https://exbit-ai.vercel.app
 Chat on WhatsApp: https://wa.me/12018291736
-Run Records: https://afterbell-ai.vercel.app/api/export?format=csv
+Run Records: https://exbit-ai.vercel.app/api/export?format=csv
 
 #BitgetHackathon @Bitget_AI #AI #AgenticTrading #Web3`,
     },

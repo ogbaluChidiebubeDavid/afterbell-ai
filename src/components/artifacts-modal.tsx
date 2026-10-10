@@ -365,7 +365,7 @@ export const ArtifactsModal: React.FC<ArtifactsModalProps> = ({
                     <div>
                       <span className="text-[#888] text-[10px] uppercase block">Webhook URL (Kapso Callback)</span>
                       <span className="font-mono text-white text-[12px]">
-                        {typeof window !== 'undefined' ? `${window.location.origin}/api/whatsapp/webhook` : 'https://afterbell-ai.vercel.app/api/whatsapp/webhook'}
+                        {typeof window !== 'undefined' ? `${window.location.origin}/api/whatsapp/webhook` : 'https://exbit-ai.vercel.app/api/whatsapp/webhook'}
                       </span>
                     </div>
                     <button
@@ -373,7 +373,7 @@ export const ArtifactsModal: React.FC<ArtifactsModalProps> = ({
                         copyToClipboard(
                           typeof window !== 'undefined'
                             ? `${window.location.origin}/api/whatsapp/webhook`
-                            : 'https://afterbell-ai.vercel.app/api/whatsapp/webhook',
+                            : 'https://exbit-ai.vercel.app/api/whatsapp/webhook',
                           'url'
                         )
                       }

@@ -75,7 +75,8 @@ export class WhatsAppChannelService {
    * Sends a WhatsApp text message via Kapso API
    */
   static async sendTextMessage(toPhone: string, bodyText: string): Promise<any> {
-    const cleanTo = toPhone.replace(/[^0-9]/g, '');
+    const rawDigits = toPhone.replace(/[^0-9]/g, '');
+    const cleanTo = `+${rawDigits}`;
     try {
       console.log(`[Kapso WhatsApp] Dispatching text to: ${cleanTo}...`);
       const response = await this.client.messages.sendText({
@@ -95,7 +96,8 @@ export class WhatsAppChannelService {
    * Sends an alert with interactive buttons (or falls back to text if buttons fail)
    */
   static async sendProposalAlert(toPhone: string, proposal: TradeProposal): Promise<any> {
-    const cleanTo = toPhone.replace(/[^0-9]/g, '');
+    const rawDigits = toPhone.replace(/[^0-9]/g, '');
+    const cleanTo = `+${rawDigits}`;
     const alertBody = this.formatAlertText(proposal);
 
     try {

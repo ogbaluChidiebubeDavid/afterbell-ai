@@ -38,56 +38,92 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => ({}));
 
-    // 1. Handle Kapso webhook format: event === "whatsapp.message.received"
-    if (body.event === 'whatsapp.message.received' || body.data?.message) {
-      const msg = body.data?.message || body.data || body;
-      const from = msg.from || msg.sender || msg.sender_phone_number;
-      const text = (msg.body || msg.text || msg.interactive?.button_reply?.title || '').trim();
+    console.log('[WhatsApp Webhook Inbound Payload]', JSON.stringify(body, null, 2));
 
-      if (from && text) {
-        console.log(`[Kapso Webhook] Inbound from ${from}: "${text}"`);
-        await WhatsAppChannelService.processInboundMessage(from, text);
-        return NextResponse.json({ success: true, processed: true });
-      }
+    let fromNumber = '';
+    let messageText = '';
+
+    // 1. Kapso v2 payload format: { message: { text: { body: "..." }, kapso: { content: "..." } }, conversation: { phone_number: "+..." } }
+    if (body.message || body.conversation) {
+      fromNumber =
+        body.conversation?.phone_number ||
+        body.message?.from ||
+        body.phone_number ||
+        body.from ||
+        '';
+
+      messageText =
+        body.message?.kapso?.content ||
+        body.message?.text?.body ||
+        body.message?.interactive?.button_reply?.id ||
+        body.message?.interactive?.button_reply?.title ||
+        (typeof body.message?.text === 'string' ? body.message.text : '') ||
+        body.message?.body ||
+        '';
     }
 
-    // 2. Handle standard Meta WhatsApp Cloud API format (entry[].changes[].value.messages[])
-    if (body.object === 'whatsapp_business_account' || body.entry) {
-      const entries = body.entry || [];
+    // 2. Kapso v1 or wrapped event format: { event: "whatsapp.message.received", data: { ... } }
+    if (!fromNumber && body.data) {
+      const data = body.data;
+      const msg = data.message || data;
+      fromNumber =
+        data.conversation?.phone_number ||
+        msg.from ||
+        msg.sender ||
+        msg.sender_phone_number ||
+        data.from ||
+        '';
 
+      messageText =
+        msg.kapso?.content ||
+        msg.text?.body ||
+        msg.interactive?.button_reply?.id ||
+        msg.interactive?.button_reply?.title ||
+        (typeof msg.text === 'string' ? msg.text : '') ||
+        msg.body ||
+        '';
+    }
+
+    // 3. Standard Meta WhatsApp Cloud API format (entry[].changes[].value.messages[])
+    if (!fromNumber && (body.object === 'whatsapp_business_account' || body.entry)) {
+      const entries = body.entry || [];
       for (const entry of entries) {
         const changes = entry.changes || [];
         for (const change of changes) {
           const value = change.value || {};
           const messages = value.messages || [];
-
           for (const msg of messages) {
-            const from = msg.from;
-            const text = (
+            fromNumber = msg.from || '';
+            messageText =
               msg.interactive?.button_reply?.id ||
               msg.interactive?.button_reply?.title ||
               msg.text?.body ||
               msg.button?.text ||
-              ''
-            ).trim();
-
-            if (from && text) {
-              console.log(`[Meta WhatsApp Webhook] Inbound from ${from}: "${text}"`);
-              await WhatsAppChannelService.processInboundMessage(from, text);
-            }
+              '';
+            if (fromNumber && messageText) break;
           }
+          if (fromNumber && messageText) break;
         }
+        if (fromNumber && messageText) break;
       }
-
-      return new Response('EVENT_RECEIVED', { status: 200 });
     }
 
-    // Direct test payload support
-    if (body.from && body.text) {
-      await WhatsAppChannelService.processInboundMessage(body.from, body.text);
-      return NextResponse.json({ success: true });
+    // 4. Flat test format { from: "...", text: "..." }
+    if (!fromNumber && body.from) {
+      fromNumber = String(body.from);
+      messageText = typeof body.text === 'string' ? body.text : body.text?.body || '';
     }
 
+    fromNumber = fromNumber.trim();
+    messageText = messageText.trim();
+
+    if (fromNumber && messageText) {
+      console.log(`[WhatsApp Webhook] ✅ Processing message from ${fromNumber}: "${messageText}"`);
+      const reply = await WhatsAppChannelService.processInboundMessage(fromNumber, messageText);
+      return NextResponse.json({ success: true, from: fromNumber, text: messageText, reply });
+    }
+
+    console.warn('[WhatsApp Webhook] No actionable message found in payload:', body);
     return new Response('EVENT_RECEIVED', { status: 200 });
   } catch (error: any) {
     console.error('[WhatsApp Webhook Error]', error);

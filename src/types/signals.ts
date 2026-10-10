@@ -17,6 +17,12 @@ export interface MarketCatalyst {
   urgency: SignalUrgency;
   sentiment: 'BULLISH' | 'BEARISH' | 'NEUTRAL' | 'VOLATILE';
   confidenceScore: number; // 0 - 100
+  sourceCitation?: string;
+  sourceUrl?: string;
+  directQuote?: string;
+  shockScore?: number;
+  assetBeta?: number;
+  falsificationCondition?: string;
   metadata: {
     sourceUrl?: string;
     macroTag?: string;

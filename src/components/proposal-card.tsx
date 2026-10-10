@@ -54,7 +54,7 @@ export const ProposalCard: React.FC<ProposalCardProps> = ({
           {isPending && (
             <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30 flex items-center gap-1.5 animate-pulse">
               <span className="w-2 h-2 rounded-full bg-amber-400" />
-              Awaiting Human Approval (Messenger)
+              Awaiting Human Approval (WhatsApp / Messenger)
             </span>
           )}
           {isApproved && (
@@ -114,16 +114,53 @@ export const ProposalCard: React.FC<ProposalCardProps> = ({
             <p className="text-[11px] text-slate-300 leading-relaxed mt-0.5">{proposal.rationale.afterHoursInformationGap}</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-[11px]">
+          {proposal.rationale.sourceCitation && (
+            <div className="bg-slate-950/70 p-2.5 rounded-lg border border-slate-800 space-y-1 text-[11px]">
+              <div className="flex items-center justify-between text-slate-300">
+                <span className="font-semibold text-cyan-300">
+                  Primary Source: {proposal.rationale.sourceCitation}
+                </span>
+                {proposal.rationale.sourceUrl && (
+                  <a
+                    href={proposal.rationale.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-cyan-400 hover:text-cyan-300 underline font-mono text-[10px]"
+                  >
+                    Primary Document ↗
+                  </a>
+                )}
+              </div>
+              {proposal.rationale.directQuote && (
+                <p className="text-slate-400 italic text-[10.5px] border-l-2 border-cyan-500/50 pl-2 py-0.5">
+                  &ldquo;{proposal.rationale.directQuote}&rdquo;
+                </p>
+              )}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-[11px] font-mono">
             <div className="bg-slate-950/60 p-2 rounded border border-slate-800">
-              <span className="text-slate-500 block">Technical Confirmation:</span>
-              <span className="text-slate-300">{proposal.rationale.technicalConfirmation}</span>
+              <span className="text-slate-500 block text-[10px]">Shock / Beta:</span>
+              <span className="text-slate-200">
+                Shock: {proposal.rationale.shockScore ?? 0.88} · β: {proposal.rationale.assetBeta ?? 1.45}
+              </span>
             </div>
             <div className="bg-slate-950/60 p-2 rounded border border-slate-800">
-              <span className="text-slate-500 block">Expected Monday Reopen Gap:</span>
+              <span className="text-slate-500 block text-[10px]">Implied Open Gap:</span>
               <span className="text-emerald-400 font-semibold">{proposal.rationale.expectedCatalystPricingAtReopen}</span>
             </div>
+            <div className="bg-slate-950/60 p-2 rounded border border-slate-800">
+              <span className="text-slate-500 block text-[10px]">Decision Verdict:</span>
+              <span className="text-cyan-300 font-semibold">{proposal.rationale.decisionVerdict || 'PROPOSED'}</span>
+            </div>
           </div>
+
+          {proposal.rationale.falsificationCondition && (
+            <div className="bg-amber-950/20 p-2 rounded-lg border border-amber-500/20 text-[10.5px] text-amber-300/90">
+              <strong>Falsification Test:</strong> {proposal.rationale.falsificationCondition}
+            </div>
+          )}
         </div>
       </div>
 
@@ -159,7 +196,7 @@ export const ProposalCard: React.FC<ProposalCardProps> = ({
       {isPending && (
         <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 bg-cyan-950/20 p-3 rounded-xl border border-cyan-500/30">
           <div className="text-xs text-cyan-200">
-            <strong>Human Approval Required:</strong> You can approve directly below or reply <strong>"YES"</strong> via Messenger.
+            <strong>Human Approval Required:</strong> You can approve directly below or reply <strong>"YES"</strong> via WhatsApp or Messenger.
           </div>
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <button

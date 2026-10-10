@@ -62,7 +62,18 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Right Nav Tabs & Action */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-3">
+          <a
+            href="https://wa.me/12018291736"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25 transition-all"
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>WhatsApp (+1 201-829-1736)</span>
+            <ExternalLink className="w-3 h-3 text-emerald-400" />
+          </a>
+
           <button
             onClick={onSimulateClick}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 transition-all shadow-md shadow-cyan-500/15"

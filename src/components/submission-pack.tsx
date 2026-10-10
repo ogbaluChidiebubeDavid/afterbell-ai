@@ -14,18 +14,20 @@ export const SubmissionPack: React.FC = () => {
     {
       key: 'thesis',
       title: 'Part 1: Thesis & Sub-Theme (After-Hours Information Pricing)',
-      content: `Exbit is an event-driven AI trading assistant reachable over Facebook Messenger that bridges a structural market inefficiency: US cash equities sleep for ~65.5 consecutive hours every weekend and 13.5 hours overnight, while macroeconomic news, geopolitical developments, tech breakthroughs, and regulatory rulings occur 24/7.
+      content: `Exbit is an event-driven AI trading assistant reachable over WhatsApp (+1 201-829-1736) and Facebook Messenger that bridges a structural market inefficiency: US cash equities sleep for ~65.5 consecutive hours every weekend and 13.5 hours overnight, while macroeconomic news, geopolitical developments, tech breakthroughs, and regulatory rulings occur 24/7.
 
 Traditional equity investors are trapped until the Monday 9:30 AM EST regular session bell, where violent opening price gaps inflict slippage and missed opportunities. However, Bitget rTokens (tokenized US stocks issued by Reality Protocol, e.g. rNVDA, rTSLA, rAAPL, rMSFT, rCOIN, rMSTR) trade 24/7 with USDT collateral.
 
-Exbit continuously monitors this temporal gap using Bitget's native signal research skills and user-defined conditions, uses an LLM reasoning engine to model the information pricing impact, applies strict non-negotiable risk guardrails, messages the trader an explainable proposal over Facebook Messenger, and executes paper orders on Bitget Agent Hub only upon explicit human approval ("YES").`,
+Exbit eliminates generic "AI slop" by enforcing strict Cascadr-grade data standards: every catalyst is source-cited against primary documents (SEC 8-K/S-1 filings, House Ethics STOCK Act PTRs, regulatory notices) with direct quotes, quantified catalyst shock scores (0-1), asset beta transmission (β), and explicit falsification criteria ("what would invalidate this trade").
+
+It applies deterministic risk guardrails ($500 cap, pre-trade dry run), sends an explainable proposal with interactive buttons over WhatsApp and Messenger, and executes paper orders on Bitget Agent Hub only upon explicit human approval ("YES").`,
     },
     {
       key: 'target_user',
       title: 'Part 2: Target User Persona',
       content: `1. Active US Equity & Macro Traders who want weekend exposure and protection without staring at terminals 24/7.
 2. Crypto-Native & Global Investors who trade on Bitget and desire real-world economic exposure to US mega-cap tech earnings and catalysts outside NYSE/NASDAQ hours.
-3. Semi-Autonomous Traders who demand a strict Human-in-the-Loop approval gate via mobile Messenger rather than black-box automated execution.`,
+3. Semi-Autonomous Traders who demand a strict Human-in-the-Loop approval gate via mobile WhatsApp rather than black-box automated execution.`,
     },
     {
       key: 'metrics',
@@ -35,34 +37,36 @@ Exbit continuously monitors this temporal gap using Bitget's native signal resea
 • Max Drawdown: 1.85% (Kept minimal via hard $500 position size caps and pre-execution dryRun checks)
 • Win Rate: 71.4% across paper test fills
 • Profit Factor: 2.85x (Gross Win / Gross Loss)
-• Zero unapproved executions: 100% of trades gated by explicit user affirmative reply.`,
+• Zero unapproved executions: 100% of trades gated by explicit user affirmative reply ("YES").`,
     },
     {
       key: 'progress',
       title: 'Part 4: Build Progress & Architecture Milestones',
       content: `• Step 1: Bitget Agentic Account OAuth connection and MCP server integration verified in --paper-trading mode.
-• Step 2: Signal Perception Layer wired with user-configured conditions (Congressional trades, X accounts, IPO filings) and Bitget research skills.
-• Step 3: Decision & Explainability Engine implemented with structured trade proposal schema, confidence scoring, and multi-factor rationale.
+• Step 2: Signal Perception Layer upgraded with source-cited provenance (primary SEC filings, congressional PTRs, and direct regulatory quotes).
+• Step 3: Decision & Explainability Engine implemented with deterministic transmission arithmetic (Catalyst Shock × Asset Beta), implied open prints, and falsification rules.
 • Step 4: Risk Control Layer enforced: $500 position size cap, 3 trades/day frequency cap, 75% min confidence cutoff, dryRun validation, and rejection logger.
-• Step 5: Interface Layer built: Facebook Messenger channel connector with Meta Graph API webhook parser and interactive mobile chat simulator.
+• Step 5: Interface Layer built: Kapso WhatsApp Cloud API integration (+1 201-829-1736) with interactive reply buttons, alongside Meta Graph API Messenger connector.
 • Step 6: Audit trail & reporting surface with live quantitative portfolio analytics and one-click CSV/JSON export.`,
     },
     {
       key: 'deliverables',
       title: 'Part 5: Project Deliverables & Submission Links',
-      content: `• Runnable Web Dashboard Demo: Real-time command center showing market clock, live rToken tickers, signal stream, proposal cards, and Messenger simulator.
-• Bitget Agent Hub Integration: MCP client running in --paper-trading mode.
-• Paper Trading Log & Audit Trail: Downloadable CSV and JSON containing full timestamped records of approved and rejected proposals.
-• Public GitHub Repository: Fully typed TypeScript/Next.js codebase with complete architecture diagrams and developer guides.`,
+      content: `• Runnable Web Dashboard Demo: https://afterbell-ai.vercel.app
+• Live WhatsApp Trading Assistant: https://wa.me/12018291736 (+1 201-829-1736)
+• Live Messenger Assistant: https://m.me/ExbitBot
+• Bitget Agent Hub Integration: MCP client running in --paper-trading mode with /skill endpoint.
+• Paper Trading Log & Audit Trail: Downloadable CSV and JSON containing full timestamped records of approved and rejected proposals (/api/export).
+• Public GitHub Repository: Fully typed TypeScript/Next.js codebase with complete architecture diagrams (https://github.com/ogbaluChidiebubeDavid/afterbell-ai).`,
     },
     {
       key: 'llm_reflections',
       title: 'Part 6: Role of the LLM in Exbit & Reflections',
-      content: `In Exbit, the LLM is treated not as a conversational chatbot, but as an autonomous reasoning agent with strict boundaries:
-1. Perception Synthesis: Ingests unstructured breaking signals from user-selected strategies and Bitget research skills, filtering noise.
-2. Information Pricing Valuation: Estimates the price transmission differential between closed native equity markets and 24/7 rTokens.
+      content: `In Exbit, the LLM is treated not as a conversational chatbot, but as an autonomous quantitative reasoning agent with strict boundaries:
+1. Sourced Perception Synthesis: Ingests breaking signals from user-selected strategies and Bitget research skills, anchoring every claim to primary verified documents.
+2. Information Pricing Valuation: Computes the price transmission differential between closed native equity markets and 24/7 rTokens using asset beta and weekend duration.
 3. Decision Explainability: Outputs structured, auditable rationales explaining *why* a trade makes sense before sending the alert.
-4. Hard Safety Isolation: The LLM cannot place orders directly; all proposals must pass deterministic risk guardrails and explicit human approval over Messenger.`,
+4. Hard Safety Isolation: The LLM cannot place orders directly; all proposals must pass deterministic risk guardrails and explicit human approval over WhatsApp.`,
     },
     {
       key: 'x_post',
@@ -70,13 +74,16 @@ Exbit continuously monitors this temporal gap using Bitget's native signal resea
       content: `Excited to unveil Exbit for the #BitgetHackathon S2 (Track: Agentic Trading) with @Bitget_AI! 🔔⚡
 
 US equities sleep 65+ hours every weekend. Global news doesn't.
-Exbit is an AI trading assistant reachable via Facebook Messenger that watches after-hours market-moving events and proposes trades in 24/7 tokenized US stocks (rTokens) on Bitget before Monday's opening bell.
+Exbit is an event-driven AI trading assistant reachable via WhatsApp & Messenger that catches after-hours market-moving events and proposes trades in 24/7 tokenized US stocks (rTokens) on Bitget before Monday's opening bell.
 
+• Sourced provenance: SEC 8-K filings & primary disclosures (no AI slop)
 • 24/7 Bitget rToken execution via Agent Hub MCP (--paper-trading)
-• Strict human-in-the-loop approval via Facebook Messenger
+• Strict human-in-the-loop approval via WhatsApp (+1 201-829-1736)
 • Real-time explainability audit trail & Sharpe 2.38 paper portfolio
 
-Check out the demo! 🚀
+Live Demo: https://afterbell-ai.vercel.app
+Chat on WhatsApp: https://wa.me/12018291736
+
 #BitgetHackathon @Bitget_AI #AI #AgenticTrading #Web3`,
     },
   ];

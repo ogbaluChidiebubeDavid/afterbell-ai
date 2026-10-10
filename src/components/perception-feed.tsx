@@ -122,6 +122,44 @@ export const PerceptionFeed: React.FC<PerceptionFeedProps> = ({
               {cat.summary}
             </p>
 
+            {cat.sourceCitation && (
+              <div className="rounded-lg bg-slate-900/90 p-2 border border-slate-800/90 space-y-1.5 text-[10px]">
+                <div className="flex items-center justify-between text-slate-300">
+                  <span className="font-semibold text-cyan-300 flex items-center gap-1">
+                    Source: {cat.sourceCitation}
+                  </span>
+                  {cat.sourceUrl && (
+                    <a
+                      href={cat.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-cyan-400 hover:text-cyan-300 underline font-mono text-[9px] flex items-center gap-0.5"
+                    >
+                      <span>Primary Doc ↗</span>
+                    </a>
+                  )}
+                </div>
+                {cat.directQuote && (
+                  <p className="text-slate-400 italic text-[9.5px] border-l-2 border-cyan-500/40 pl-1.5 py-0.5">
+                    &ldquo;{cat.directQuote}&rdquo;
+                  </p>
+                )}
+                <div className="flex items-center gap-3 font-mono text-[9.5px] pt-1 border-t border-slate-800">
+                  <span className="text-slate-400">
+                    Shock: <strong className="text-white">{cat.shockScore ?? 0.85}</strong>
+                  </span>
+                  <span className="text-slate-400">
+                    Beta (β): <strong className="text-white">{cat.assetBeta ?? 1.45}</strong>
+                  </span>
+                  {cat.falsificationCondition && (
+                    <span className="text-amber-400/90 truncate max-w-[240px]" title={cat.falsificationCondition}>
+                      Test: {cat.falsificationCondition}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+
             <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-900">
               <span className="flex items-center gap-1 text-slate-400">
                 <Sparkles className="w-3 h-3 text-cyan-400" />

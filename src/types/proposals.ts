@@ -31,6 +31,14 @@ export interface ExplainabilityRationale {
   macroSentimentContext: string;
   technicalConfirmation: string;
   expectedCatalystPricingAtReopen: string;
+  sourceCitation?: string;
+  sourceUrl?: string;
+  directQuote?: string;
+  shockScore?: number;
+  assetBeta?: number;
+  impliedOpenGap?: string;
+  falsificationCondition?: string;
+  decisionVerdict?: 'PROPOSED' | 'DECLINED';
 }
 
 export interface TradeProposal {

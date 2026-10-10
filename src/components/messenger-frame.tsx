@@ -292,16 +292,30 @@ export const MessengerFrame: React.FC<MessengerFrameProps> = ({
             </span>
           </div>
 
-          {/* Contact header - centered avatar + name, Messenger thread top */}
+          {/* Contact header - centered avatar + name, WhatsApp thread top */}
           <div className="px-4 pb-3 flex flex-col items-center shrink-0 z-20">
-            <div className="w-[52px] h-[52px] rounded-full bg-gradient-to-tr from-[#0a84ff] to-[#00c6ff] flex items-center justify-center text-white font-bold text-[14px] shadow-lg shadow-blue-500/20 mb-1.5">
-              EX
+            <a
+              href="https://wa.me/12018291736"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-[52px] h-[52px] rounded-full bg-gradient-to-tr from-[#25d366] to-[#128c7e] flex items-center justify-center text-white font-bold text-[14px] shadow-lg shadow-emerald-500/25 mb-1.5 hover:scale-105 transition-transform cursor-pointer"
+              title="Chat directly on WhatsApp: +1 201-829-1736"
+            >
+              WA
+            </a>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[13px] font-semibold text-white tracking-tight">Exbit</span>
+              <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-mono">Kapso</span>
             </div>
-            <span className="text-[13px] font-semibold text-white tracking-tight">Exbit</span>
-            <span className="text-[11px] text-[#0084ff] font-medium flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#0084ff] animate-pulse"></span>
-              Messenger • Active Now
-            </span>
+            <a
+              href="https://wa.me/12018291736"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[11px] text-[#25d366] font-medium flex items-center gap-1 hover:underline cursor-pointer"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-[#25d366] animate-pulse"></span>
+              WhatsApp • +1 201-829-1736
+            </a>
           </div>
 
           {/* Divider */}
@@ -400,26 +414,40 @@ export const MessengerFrame: React.FC<MessengerFrameProps> = ({
             <button
               onClick={() => handleQuickAction('YES')}
               disabled={isSending}
-              className="px-3 py-1 rounded-full bg-[#30d158]/15 hover:bg-[#30d158]/25 text-[#30d158] font-semibold text-[10px] transition-all disabled:opacity-50 shrink-0"
+              className="px-2.5 py-1 rounded-full bg-[#25d366]/20 hover:bg-[#25d366]/30 text-[#25d366] font-semibold text-[10px] transition-all disabled:opacity-50 shrink-0"
             >
-              Reply "YES"
+              "YES"
             </button>
             <button
               onClick={() => handleQuickAction('NO')}
               disabled={isSending}
-              className="px-3 py-1 rounded-full bg-[#ff453a]/15 hover:bg-[#ff453a]/25 text-[#ff453a] font-semibold text-[10px] transition-all disabled:opacity-50 shrink-0"
+              className="px-2.5 py-1 rounded-full bg-[#ff453a]/15 hover:bg-[#ff453a]/25 text-[#ff453a] font-semibold text-[10px] transition-all disabled:opacity-50 shrink-0"
             >
-              Reply "NO"
+              "NO"
+            </button>
+            <button
+              onClick={() => handleQuickAction('STATUS')}
+              disabled={isSending}
+              className="px-2.5 py-1 rounded-full bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-400 font-semibold text-[10px] transition-all disabled:opacity-50 shrink-0"
+            >
+              "STATUS"
+            </button>
+            <button
+              onClick={() => handleQuickAction('SCAN')}
+              disabled={isSending}
+              className="px-2.5 py-1 rounded-full bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 font-semibold text-[10px] transition-all disabled:opacity-50 shrink-0"
+            >
+              "SCAN"
             </button>
             <button
               onClick={handleNextScenario}
-              className="px-3 py-1 rounded-full bg-white/8 hover:bg-white/15 text-white/60 font-mono text-[10px] transition-all flex items-center gap-1 shrink-0"
+              className="px-2.5 py-1 rounded-full bg-white/8 hover:bg-white/15 text-white/60 font-mono text-[10px] transition-all flex items-center gap-1 shrink-0"
             >
               Next <ChevronRight className="w-3 h-3" />
             </button>
           </div>
 
-          {/* Messenger input bar */}
+          {/* WhatsApp input bar */}
           <form
             onSubmit={handleSend}
             className="px-3 pb-5 pt-2 bg-[#1c1c1e] border-t border-white/[0.06] flex items-center gap-2 shrink-0"
@@ -428,14 +456,14 @@ export const MessengerFrame: React.FC<MessengerFrameProps> = ({
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder="Message..."
-              className="flex-1 bg-[#2c2c2e] border border-white/8 text-white placeholder-[#636366] text-[13px] rounded-full px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#0a84ff]/60 transition-all"
+              placeholder="Message on WhatsApp..."
+              className="flex-1 bg-[#2c2c2e] border border-white/8 text-white placeholder-[#636366] text-[13px] rounded-full px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#25d366]/60 transition-all"
               disabled={isSending}
             />
             <button
               type="submit"
               disabled={!inputText.trim() || isSending}
-              className="w-8 h-8 rounded-full bg-[#0a84ff] hover:bg-[#0071e3] text-white flex items-center justify-center transition-all disabled:opacity-30 shrink-0"
+              className="w-8 h-8 rounded-full bg-[#25d366] hover:bg-[#128c7e] text-white flex items-center justify-center transition-all disabled:opacity-30 shrink-0 shadow-md shadow-emerald-500/20"
             >
               <Send className="w-3.5 h-3.5 fill-current" />
             </button>
